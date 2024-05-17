@@ -1,14 +1,17 @@
-import logo from './logo.svg';
-import './App.css';
+// App.js
+import { BrowserRouter,Routes, Route, Switch } from 'react-router-dom';
+import LoginPage from './components/LoginPage';
+import Dashboard from './components/Dashboard';
 
-function App() {
+export default function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-          Learn React
-      </header>
-    </div>
+    <div>
+      <BrowserRouter>
+      <Routes>
+        <Route index element={<LoginPage />}/>
+      </Routes>
+      </BrowserRouter>
+      </div>
+    
   );
 }
-
-export default App;
