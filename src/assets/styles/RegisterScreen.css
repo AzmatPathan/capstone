@@ -1,0 +1,50 @@
+.register-container {
+    min-height: 100vh;
+}
+
+.register-form {
+    width: 100%;
+    max-width: 360px;  /* Adjusted width to match the TELUS style */
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+}
+
+.register-button {
+    background-color: #43B02A;  /* TELUS green color */
+    border-color: #43B02A;
+    color: white;  /* Ensure text color is white */
+}
+
+.register-button:hover {
+    background-color: #3a9923;
+    border-color: #3a9923;
+}
+
+.form-link {
+    color: #4B286D;  /* TELUS purple color */
+    text-decoration: none;
+}
+
+.form-link:hover {
+    color: #3E205B;
+    text-decoration: underline;  /* Underline on hover */
+}
+
+.logo img {
+    max-width: 150px;  /* Adjusted size to fit better */
+}
+
+.form-group {
+    margin-bottom: 1rem;  /* Adjusted spacing for form groups */
+}
+
+.text-center {
+    text-align: center;  /* Center align text */
+}
+
+.text-end {
+    text-align: end;  /* Right align text */
+}
