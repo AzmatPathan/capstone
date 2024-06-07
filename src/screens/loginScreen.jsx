@@ -1,16 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Form, Button, Row, Col } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import Loader from '../components/Loader';
-import FormContainer from '../components/FormContainer';
-
+import { toast } from 'react-toastify';
 import { useLoginMutation } from '../slices/userApiSlice';
 import { setCredentials } from '../slices/authSlice';
-import { toast } from 'react-toastify';
+import '../assets/styles/login.css';
+// import { ReactComponent as ExIconEye } from './ex-icon-eye.svg'; // Assuming this is the icon used for the password field
 
 const LoginScreen = () => {
-    
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
@@ -42,52 +39,73 @@ const LoginScreen = () => {
         }
     };
 
-
     return (
-        <FormContainer>
-            <h1>Sign In</h1>
+        <section className="vh-100 gradient-custom d-flex justify-content-center align-items-center">
+            <div className="container">
+                <div className="row justify-content-center">
+                    <div className="col-12 col-md-8 col-lg-6 col-xl-5">
+                        <div className="card  text-white" style={{ borderRadius: "1rem", backgroundColor: '#49266C' }}>
+                            <div className="card-body p-4 text-center">
+                                <h2 className="fw-bold mb-2 text-uppercase">Welcome Back</h2>
+                                <p className="text-white-50 mb-4">Login to ITMS</p>
+                                <form onSubmit={submitHandler}>
+                                    <div className="form-outline form-white mb-3">
+                                        <input
+                                            type="email"
+                                            id="typeEmailX"
+                                            className="form-control form-control-lg"
+                                            value={email}
+                                            onChange={(e) => setEmail(e.target.value)}
+                                            required
+                                        />
+                                        <label className="form-label" htmlFor="typeEmailX">Email</label>
+                                    </div>
 
-            <Form onSubmit={submitHandler}>
-                <Form.Group className='my-2' controlId='email'>
-                    <Form.Label>Email Address</Form.Label>
-                    <Form.Control
-                        type='email'
-                        placeholder='Enter email'
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                    ></Form.Control>
-                </Form.Group>
+                                    <div className="form-outline form-white mb-3">
+                                        <input
+                                            type="password"
+                                            id="typePasswordX"
+                                            className="form-control form-control-lg"
+                                            value={password}
+                                            onChange={(e) => setPassword(e.target.value)}
+                                            required
+                                        />
+                                        <label className="form-label" htmlFor="typePasswordX">Password</label>
+                                    </div>
 
-                <Form.Group className='my-2' controlId='password'>
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control
-                        type='password'
-                        placeholder='Enter password'
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    ></Form.Control>
-                </Form.Group>
+                                    <p className="small mb-3 pb-1">
+                                        <a className="text-white-50" href="#!">Forgot password?</a>
+                                    </p>
 
-                <Button disabled={isLoading} type='submit' variant='primary'>
-                    Sign In
-                </Button>
+                                    <button className="btn btn-outline-light btn-lg px-5" type="submit">
+                                        {isLoading ? 'Loading...' : 'Login'}
+                                    </button>
+                                </form>
 
-                {isLoading && <Loader />}
-            </Form>
+                                <div className="d-flex justify-content-center text-center mt-3">
+                                    <a href="#!" className="text-white mx-2">
+                                        <i className="fab fa-facebook-f fa-lg"></i>
+                                    </a>
+                                    <a href="#!" className="text-white mx-2">
+                                        <i className="fab fa-twitter fa-lg"></i>
+                                    </a>
+                                    <a href="#!" className="text-white mx-2">
+                                        <i className="fab fa-google fa-lg"></i>
+                                    </a>
+                                </div>
 
-            <Row className='py-3'>
-                <Col>
-                    New Customer?{' '}
-                    <Link to={'/register'}>
-                        Register
-                    </Link>
-                </Col>
-            </Row>
-        </FormContainer>
+                                <div className="mt-3">
+                                    <p className="mb-0">
+                                        Don't have an account? <Link to="/register" className="text-white-50 fw-bold">Sign Up</Link>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section >
     );
 };
 
 export default LoginScreen;
-
-
-
