@@ -93,17 +93,7 @@ const RegisterScreen = () => {
                     {isLoading ? 'Loading...' : 'Register'}
                   </button>
                 </form>
-                <div className="d-flex justify-content-center text-center mt-3">
-                  <a href="#!" className="text-white mx-2">
-                    <i className="fab fa-facebook-f fa-lg"></i>
-                  </a>
-                  <a href="#!" className="text-white mx-2">
-                    <i className="fab fa-twitter fa-lg"></i>
-                  </a>
-                  <a href="#!" className="text-white mx-2">
-                    <i className="fab fa-google fa-lg"></i>
-                  </a>
-                </div>
+                
                 <div className="mt-3">
                   <p className="mb-0">
                     Already have an account? <Link to="/login" className="text-white-50 fw-bold">Login</Link>
