@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { useLoginMutation } from '../slices/userApiSlice';
 import { setCredentials } from '../slices/authSlice';
-import '../assets/styles/login.css';
 // import { ReactComponent as ExIconEye } from './ex-icon-eye.svg'; // Assuming this is the icon used for the password field
 
 const LoginScreen = () => {
