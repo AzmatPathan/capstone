@@ -1,0 +1,13 @@
+.bold-text {
+  font-weight: bold;
+}
+
+.custom-link {
+  color: black;
+  text-decoration: none;
+}
+
+.custom-link:hover {
+  text-decoration: underline; /* Optional: add underline on hover if desired */
+}
+
