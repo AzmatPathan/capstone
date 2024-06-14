@@ -7,13 +7,12 @@ import {
     Col,
     Container,
     Form,
-    FormControl,
-    InputGroup,
     Row,
     Table,
 } from 'react-bootstrap';
 import Sidebar from '../../components/sidebar';
 import { useGetDashboardDataQuery } from '../../slices/dashboardSlice';
+import { useNavigate } from 'react-router-dom';
 
 const EquipmentScreen = () => {
     const { data, isLoading, error } = useGetDashboardDataQuery();
@@ -23,6 +22,7 @@ const EquipmentScreen = () => {
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [sidebarOpen, setSidebarOpen] = useState(true);
+    const navigate = useNavigate();
 
     const handleCustomerNameChange = (e) => {
         setCustomerName(e.target.value);
@@ -46,10 +46,15 @@ const EquipmentScreen = () => {
 
     const handleNewEquipment = () => {
         // TODO: Implement logic to add a new equipment item
+        navigate('/upload-image');
     };
 
     const handleExport = () => {
         // TODO: Implement logic to export equipment data
+    };
+
+    const handleRowClick = (equipmentId) => {
+        navigate(`/equipments/${equipmentId}`);
     };
 
     return (
@@ -127,7 +132,6 @@ const EquipmentScreen = () => {
                         <Table striped bordered hover className="bg-white">
                             <thead>
                                 <tr>
-                                    <th></th>
                                     <th>Equipment ID</th>
                                     <th>Barcode</th>
                                     <th>Created By</th>
@@ -139,10 +143,8 @@ const EquipmentScreen = () => {
                             </thead>
                             <tbody>
                                 {data.data.map((equipment, index) => (
-                                    <tr key={index}>
-                                        <td>
-                                            <Form.Check type="checkbox" />
-                                        </td>
+                                    <tr key={index} onClick={() => handleRowClick(equipment.equipment_id)} style={{ cursor: 'pointer' }}>
+
                                         <td>{equipment.equipment_id}</td>
                                         <td>{equipment.barcode}</td>
                                         <td>{equipment.created_by}</td>
