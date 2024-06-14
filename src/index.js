@@ -12,8 +12,9 @@ import {
 } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import LoginScreen from './screens/loginScreen';
-import 'bootstrap/dist/css/bootstrap.min.css'; 
+import 'bootstrap/dist/css/bootstrap.min.css';
 import RegisterScreen from './screens/registerScreen';
+import EquipmentScreen from './screens/dashboard/equipmentScreen';
 
 
 
@@ -22,6 +23,7 @@ const router = createBrowserRouter(
     <Route path='/' element={<App />}>
       <Route path='/login' element={<LoginScreen />} />
       <Route path='/register' element={<RegisterScreen />} />
+      <Route path='/dashboard' element={<EquipmentScreen />} />
     </Route>
   )
 );
