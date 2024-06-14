@@ -6,10 +6,9 @@ import { useLoginMutation } from '../slices/userApiSlice';
 import { setCredentials } from '../slices/authSlice';
 // import { ReactComponent as ExIconEye } from './ex-icon-eye.svg'; // Assuming this is the icon used for the password field
 
-const LoginScreen = () => {
+const ForgotPassword = () => {
     const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-
+    const [loginId, setLoginID] = useState('');
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -30,7 +29,7 @@ const LoginScreen = () => {
     const submitHandler = async (e) => {
         e.preventDefault();
         try {
-            const res = await login({ email, password }).unwrap();
+            const res = await login({ email,loginId}).unwrap();
             dispatch(setCredentials({ ...res }));
             navigate(redirect);
         } catch (err) {
@@ -45,39 +44,36 @@ const LoginScreen = () => {
                     <div className="col-12 col-md-8 col-lg-6 col-xl-5">
                         <div className="card  text-white" style={{ borderRadius: "1rem", backgroundColor: '#49266C' }}>
                             <div className="card-body p-4 text-center">
-                                <h2 className="fw-bold mb-2 text-uppercase">Welcome Back</h2>
-                                <p className="text-white-50 mb-4">Login to ITMS</p>
+                                <h2 className="fw-bold mb-2 text-uppercase">Forgot Password?</h2>
+                                <p className="text-white-50 mb-4">Dont  worry. We  can  help</p>
                                 <form onSubmit={submitHandler}>
                                     <div className="form-outline form-white mb-3">
                                         <input
                                             type="email"
                                             id="typeEmailX"
                                             className="form-control form-control-lg"
+                                            placeholder="Please fill in your email address"
                                             value={email}
                                             onChange={(e) => setEmail(e.target.value)}
                                             required
                                         />
                                         <label className="form-label" htmlFor="typeEmailX">Email</label>
                                     </div>
-
-                                    <div className="form-outline form-white mb-3">
-                                        <input
-                                            type="password"
-                                            id="typePasswordX"
-                                            className="form-control form-control-lg"
-                                            value={password}
-                                            onChange={(e) => setPassword(e.target.value)}
-                                            required
-                                        />
-                                        <label className="form-label" htmlFor="typePasswordX">Password</label>
-                                    </div>
-
-                                    <p className="small mb-3 pb-1">
-                                        <Link to="/forgot" className="text-white-50">Forgot password?</Link>
-                                    </p>
+<div className="form-outline form-white mb-3">
+                    <input
+                      type="text"
+                      id="name"
+                      className="form-control form-control-lg"
+                      placeholder="Please fill in your Login ID"
+                      value={loginId}
+                      onChange={(e) =>setLoginID(e.target.value)}
+                      required
+                    />
+                    <label className="form-label" htmlFor="name">LoginID</label>
+                  </div>
 
                                     <button className="btn btn-outline-light btn-lg px-5" type="submit">
-                                        {isLoading ? 'Loading...' : 'Login'}
+                                        {isLoading ? 'Loading...' : 'Continue'}
                                     </button>
                                 </form>
 
@@ -95,7 +91,7 @@ const LoginScreen = () => {
 
                                 <div className="mt-3">
                                     <p className="mb-0">
-                                        Don't have an account? <Link to="/register" className="text-white-50 fw-bold">Sign Up</Link>
+                                    Remember your password? <Link to="/login" className="text-white-50 fw-bold">Back to login</Link>
                                     </p>
                                 </div>
                             </div>
@@ -107,4 +103,4 @@ const LoginScreen = () => {
     );
 };
 
-export default LoginScreen;
+export default ForgotPassword ;

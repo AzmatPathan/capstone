@@ -17,6 +17,7 @@ import RegisterScreen from './screens/registerScreen';
 import EquipmentScreen from './screens/dashboard/equipmentScreen';
 
 
+import ForgotPassword  from './screens/ForgotPassword';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -24,6 +25,7 @@ const router = createBrowserRouter(
       <Route path='/login' element={<LoginScreen />} />
       <Route path='/register' element={<RegisterScreen />} />
       <Route path='/dashboard' element={<EquipmentScreen />} />
+      <Route path='/forgot' element={<ForgotPassword />}/>
     </Route>
   )
 );
