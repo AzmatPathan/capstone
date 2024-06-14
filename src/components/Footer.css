@@ -11,3 +11,10 @@
   text-decoration: underline; /* Optional: add underline on hover if desired */
 }
 
+.icon-link {
+  color: #000; /* Adjust the color of the icon */
+  text-decoration: none; /* Remove underline */
+}
+.icon-link:hover {
+  color: #007bff; /* Change color on hover */
+}

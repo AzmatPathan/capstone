@@ -15,14 +15,14 @@ import LoginScreen from './screens/loginScreen';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import RegisterScreen from './screens/registerScreen';
 import EquipmentScreen from './screens/dashboard/equipmentScreen';
-
-
+import HomeScreen from './screens/homeScreen';
 import ForgotPassword  from './screens/ForgotPassword';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/' element={<App />}>
       <Route path='/login' element={<LoginScreen />} />
+      <Route index={true} path='/' element={<HomeScreen />} />
       <Route path='/register' element={<RegisterScreen />} />
       <Route path='/dashboard' element={<EquipmentScreen />} />
       <Route path='/forgot' element={<ForgotPassword />}/>

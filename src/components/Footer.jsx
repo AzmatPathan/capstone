@@ -12,9 +12,12 @@ const Footer = () => {
               </div>
             </div>
             <div className="social-icons d-flex justify-content-start gap-2">
-              <i className="fab fa-facebook-f fa-lg text-dark"></i>
-              <i className="fab fa-twitter fa-lg text-dark"></i>
-              <i className="fab fa-instagram fa-lg text-dark"></i>
+            <a href="https://www.facebook.com/TULUSband/" class="icon-link" target="_blank">
+              <i className="fab fa-facebook-f fa-lg text-dark"></i></a>
+              <a href="https://x.com/telus" class="icon-link" target="_blank">
+              <i className="fab fa-twitter fa-lg text-dark"></i></a>
+              <a href="https://www.instagram.com/telus/?hl=en" class="icon-link" target="_blank">
+              <i className="fab fa-instagram fa-lg text-dark"></i></a>
             </div>
           </div>
           <div className="col-lg-3 mb-4">

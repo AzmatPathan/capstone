@@ -19,19 +19,6 @@ const App = () => {
       <Container>
           <Outlet />
         </Container>
-      <div className="content-wrapper">
-      <main>
-          <div className="overlay-text">
-            <div>Telus ITMS</div>
-            <div className="additional-text">TELUS maintains an extensive inventory of HVAC equipment across its facilities.</div>
-            <div className="additional-text">Our advanced mobile app leverages Computer Vision to efficiently capture data from equipment nameplates.</div>
-          </div>
-          <img src={mainImage} alt="Main Image" className="main-image" />
-        </main>
-        <main>
-          <img src={secondImage} alt="Second Image" className="second-image" />
-        </main>
-      </div>
       <Footer/>
       </>
   );

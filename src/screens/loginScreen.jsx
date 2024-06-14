@@ -82,13 +82,13 @@ const LoginScreen = () => {
                                 </form>
 
                                 <div className="d-flex justify-content-center text-center mt-3">
-                                    <a href="#!" className="text-white mx-2">
+                                    <a href="https://www.facebook.com/TULUSband/" className="text-white mx-2">
                                         <i className="fab fa-facebook-f fa-lg"></i>
                                     </a>
-                                    <a href="#!" className="text-white mx-2">
+                                    <a href="https://x.com/telus" className="text-white mx-2">
                                         <i className="fab fa-twitter fa-lg"></i>
                                     </a>
-                                    <a href="#!" className="text-white mx-2">
+                                    <a href="https://www.instagram.com/telus/?hl=en" className="text-white mx-2">
                                         <i className="fab fa-instagram fa-lg"></i>
                                     </a>
                                 </div>
