@@ -11,7 +11,7 @@ const Sidebar = () => {
                     <Nav.Link href="#" className="text-white">
                         <FaHome className="mr-2" /> Equipments
                     </Nav.Link>
-                    <Nav.Link href="#" className="text-white">
+                    <Nav.Link href="/user" className="text-white">
                         <FaCog className="mr-2" /> Users
                     </Nav.Link>
                     <Nav.Link href="#" className="text-white">
