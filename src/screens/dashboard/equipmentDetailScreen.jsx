@@ -95,12 +95,13 @@ const EquipmentDetailScreen = () => {
     return (
         <Container fluid>
             <Row>
-                {sidebarOpen && (
-                    <Col md={2} className="d-flex flex-column justify-content-between" style={{ backgroundColor: '#f8f9fa', maxHeight: 'calc(100vh - 56px)', position: 'sticky', top: '56px' }}>
-                        <Sidebar sidebarOpen={sidebarOpen} />
-                    </Col>
-                )}
-                <Col md={{ span: sidebarOpen ? 10 : 12, offset: sidebarOpen ? 2 : 0 }} className="pt-3" style={{ backgroundColor: '#f8f9fa', marginLeft: sidebarOpen ? '16.666%' : 0 }}>
+                <Col xs={12} md={sidebarOpen ? 2 : 0} className="p-0">
+                    {sidebarOpen && <Sidebar sidebarOpen={sidebarOpen} />}
+                </Col>
+                <Col xs={12} md={sidebarOpen ? 10 : 12} className="pt-3" style={{
+                    backgroundColor: '#f8f9fa',
+                    marginTop: '56px' // Adjust according to your header height
+                }}>
                     <Row className="mb-4">
                         <Col>
                             <h2>{id ? 'Edit Equipment' : 'Add New Equipment'}</h2>
