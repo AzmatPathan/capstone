@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { Container, Form, Button, Alert, Modal, Row, Col } from 'react-bootstrap';
 import { useFetchEquipmentDetailQuery, useUpdateEquipmentMutation, useAddEquipmentMutation } from '../../slices/equipmentSlice';
 import Loader from '../../components/Loader';
@@ -9,7 +9,8 @@ import Sidebar from '../../components/sidebar';
 const EquipmentDetailScreen = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { data: equipmentDetail, isLoading, error } = useFetchEquipmentDetailQuery(id, {
+    const location = useLocation(); // Use useLocation to access location state
+    const { data: equipmentDetail, isLoading, error: fetchError } = useFetchEquipmentDetailQuery(id, {
         skip: !id, // Skip the query if no id is present (for adding new equipment)
     });
     const [updateEquipment] = useUpdateEquipmentMutation();
@@ -32,6 +33,21 @@ const EquipmentDetailScreen = () => {
     const [showModal, setShowModal] = useState(false);
     const [sidebarOpen, setSidebarOpen] = useState(true);
 
+    // Update formData from location state when an image is uploaded
+    useEffect(() => {
+        if (location.state && location.state.uploadedFileData) {
+            const { description, data: { imageData } } = location.state.uploadedFileData;
+            if (imageData) {
+                setFormData(prevFormData => ({
+                    ...prevFormData,
+                    model_number: imageData.modelNumber || '', // Update model_number from formData
+                    additional_details: description || ''
+                }));
+            }
+        }
+    }, [location.state]);
+
+    // Update formData when equipmentDetail is fetched
     useEffect(() => {
         if (equipmentDetail) {
             setFormData({
@@ -49,6 +65,7 @@ const EquipmentDetailScreen = () => {
         }
     }, [equipmentDetail]);
 
+    // Handle form input changes
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({
@@ -57,6 +74,7 @@ const EquipmentDetailScreen = () => {
         });
     };
 
+    // Handle form submission (update or add equipment)
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -74,22 +92,25 @@ const EquipmentDetailScreen = () => {
         }
     };
 
+    // Close modal and navigate to dashboard
     const handleCloseModal = () => {
         setShowModal(false);
-        navigate('/'); // Redirect to dashboard
+        navigate('/dashboard');
     };
 
+    // Toggle sidebar visibility
     const handleToggleSidebar = () => {
         setSidebarOpen(!sidebarOpen);
     };
 
+    // Placeholder function for export functionality
     const handleExport = () => {
-        // Implement the export functionality here
         console.log('Export functionality to be implemented');
     };
 
+    // Navigate back function
     const handleBack = () => {
-        navigate(-1); // Go back to the previous screen (same as clicking browser back button)
+        navigate(-1);
     };
 
     return (
@@ -123,7 +144,7 @@ const EquipmentDetailScreen = () => {
                     ) : (
                         <FormContainer>
                             <Form onSubmit={handleSubmit}>
-                                {error && <Alert variant="danger">{error.message}</Alert>}
+                                {fetchError && <Alert variant="danger">{fetchError.message}</Alert>}
                                 {showAlert.message && <Alert variant={showAlert.variant} onClose={() => setShowAlert({ message: '', variant: '' })} dismissible>{showAlert.message}</Alert>}
                                 <Row>
                                     <Col md={6}>
@@ -243,6 +264,7 @@ const EquipmentDetailScreen = () => {
                                         </Form.Group>
                                     </Col>
                                     <Col md={6}>
+
                                         <Form.Group className="mb-3" controlId="formAdditionalDetails">
                                             <Form.Label>Additional Details</Form.Label>
                                             <Form.Control
@@ -276,7 +298,7 @@ const EquipmentDetailScreen = () => {
                     </Modal>
                 </Col>
             </Row>
-        </Container>
+        </Container >
     );
 };
 

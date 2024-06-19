@@ -3,30 +3,33 @@ import { apiSlice } from './apiSlice';
 export const uploadSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
         uploadFile: builder.mutation({
-            query: (file) => {
+            query: ({ description, file }) => {
                 const formData = new FormData();
-                formData.append('file', file);
+                formData.append('description', description);
+                formData.append('image', file);
 
                 return {
                     url: '/api/upload',
                     method: 'POST',
                     body: formData,
                     headers: {
-                        // Do not set Content-Type to multipart/form-data, fetch will set it automatically
+                        // Let fetch set the Content-Type automatically
                     },
                 };
             },
             transformResponse: (response, meta, arg) => {
                 return { ...response, progress: 100 }; // Assuming the response includes the file URL or similar data
             },
-            onQueryStarted: async (file, { dispatch, queryFulfilled }) => {
+            onQueryStarted: async ({ description, file }, { dispatch, queryFulfilled }) => {
                 try {
                     const { data } = await queryFulfilled;
-                    // Optionally, handle data here if needed
+                    console.log('Upload successful:', data);
+                    // You can dispatch additional actions here if needed
                 } catch (error) {
                     console.error('Upload error:', error);
+                    // Handle the error appropriately here
                 }
-            }
+            },
         }),
     }),
 });

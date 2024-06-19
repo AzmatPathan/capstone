@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Button, Card, Container, Form, ProgressBar } from 'react-bootstrap';
 import { useDropzone } from 'react-dropzone';
-import { Button, Card, Container, ProgressBar } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 import { useUploadFileMutation } from '../../slices/uploadSlice';
 import { toast } from 'react-toastify';
 
@@ -9,19 +9,22 @@ const UploadImageScreen = () => {
     const navigate = useNavigate();
     const [image, setImage] = useState(null);
     const [progress, setProgress] = useState(0);
-
+    const [description, setDescription] = useState('');
     const [uploadFile, { isLoading, isSuccess, isError, error, data }] = useUploadFileMutation();
 
+    // Handle API response and navigation
     useEffect(() => {
-        if (isSuccess) {
+        if (isSuccess && data) {
             toast.success('File uploaded successfully');
-            navigate('/add-equipment', { state: { image, fileUrl: data.fileUrl } });
+            navigate('/add-equipment', {
+                state: { uploadedFileData: { fileUrl: data.fileUrl, description, data } },
+            });
         } else if (isError) {
-            const errorMessage = error?.data?.message || error.message || 'Upload failed';
+            const errorMessage = error?.data?.message || 'Upload failed';
             console.error('Upload error:', error);
             toast.error(errorMessage);
         }
-    }, [isSuccess, isError, error, data, navigate, image]);
+    }, [isSuccess, isError, error, data, description, navigate]);
 
     const onDrop = (acceptedFiles) => {
         if (acceptedFiles.length > 0) {
@@ -45,7 +48,7 @@ const UploadImageScreen = () => {
                     setProgress((prev) => (prev < 100 ? prev + 10 : 100));
                 }, 200);
 
-                await uploadFile(image).unwrap();
+                await uploadFile({ file: image, description }).unwrap(); // Using unwrap to handle promise
                 clearInterval(uploadProgress);
                 setProgress(100);
             } catch (error) {
@@ -92,6 +95,16 @@ const UploadImageScreen = () => {
                         <ProgressBar now={progress} label={`${progress}%`} />
                     </div>
                 )}
+                <Form.Group className="mt-3">
+                    <Form.Label>Description</Form.Label>
+                    <Form.Control
+                        as="textarea"
+                        rows={3}
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        placeholder="Enter description"
+                    />
+                </Form.Group>
                 <div className="mt-3 d-flex justify-content-between">
                     <Button variant="secondary" onClick={() => navigate('/dashboard')}>
                         Cancel
