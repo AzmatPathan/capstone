@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { Nav, Navbar } from 'react-bootstrap';
-import { FaHome, FaCog, FaUsers, FaStar, FaUser } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import { Nav } from 'react-bootstrap';
+import { FaHome, FaCog, FaUsers, FaStar, FaUpload } from 'react-icons/fa';
+import { NavLink } from 'react-router-dom';
 
 const Sidebar = ({ sidebarOpen }) => {
     const [activeItem, setActiveItem] = useState('Equipments'); // Default active item
@@ -26,39 +25,44 @@ const Sidebar = ({ sidebarOpen }) => {
         }}>
             <Nav className="flex-column">
                 <Nav.Link
-                    href="#"
+                    as={NavLink}
+                    to="/dashboard"
                     className={activeItem === 'Equipments' ? 'text-primary font-weight-bold' : 'text-dark'}
                     onClick={() => handleItemClick('Equipments')}
                 >
                     <FaHome className="mr-2" /> Equipments
                 </Nav.Link>
                 <Nav.Link
-                    href="/user"
-                    className={activeItem === 'Users' ? 'text-primary font-weight-bold' : 'text-dark'}
-                    onClick={() => handleItemClick('Users')}
-                >
-                    <FaCog className="mr-2" /> Users
-                </Nav.Link>
-                <Nav.Link
-                    href="#"
+                    as={NavLink}
+                    to="/reviews"
                     className={activeItem === 'Reviews' ? 'text-primary font-weight-bold' : 'text-dark'}
                     onClick={() => handleItemClick('Reviews')}
                 >
                     <FaUsers className="mr-2" /> Reviews
                 </Nav.Link>
                 <Nav.Link
-                    href="#"
+                    as={NavLink}
+                    to="/uploads"
+                    className={activeItem === 'Uploads' ? 'text-primary font-weight-bold' : 'text-dark'}
+                    onClick={() => handleItemClick('Uploads')}
+                >
+                    <FaUpload className="mr-2" /> Uploads
+                </Nav.Link>
+                <Nav.Link
+                    as={NavLink}
+                    to="/user"
+                    className={activeItem === 'Users' ? 'text-primary font-weight-bold' : 'text-dark'}
+                    onClick={() => handleItemClick('Users')}
+                >
+                    <FaCog className="mr-2" /> Users
+                </Nav.Link>
+                <Nav.Link
+                    as={NavLink}
+                    to="/profile"
                     className={activeItem === 'Profile' ? 'text-primary font-weight-bold' : 'text-dark'}
                     onClick={() => handleItemClick('Profile')}
                 >
                     <FaStar className="mr-2" /> Profile
-                </Nav.Link>
-                <Nav.Link
-                    href="#"
-                    className={activeItem === 'Settings' ? 'text-primary font-weight-bold' : 'text-dark'}
-                    onClick={() => handleItemClick('Settings')}
-                >
-                    <FaUser className="mr-2" /> Settings
                 </Nav.Link>
             </Nav>
         </div>
