@@ -4,14 +4,20 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { useLoginMutation } from '../slices/userApiSlice';
 import { setCredentials } from '../slices/authSlice';
+
 import Loader from '../components/Loader';
 import Message from '../components/Message';
+
 
 const LoginScreen = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
+    const [userName, setUserName] = useState(''); // Add this state to store user name
+
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -36,8 +42,14 @@ const LoginScreen = () => {
         setLoading(true);
         try {
             const res = await login({ email, password }).unwrap();
+
+            dispatch(setCredentials({ ...res }));
+            setUserName(res.name); // Assuming the API response contains the user's name
+            navigate('/profile', { state: { userName: res.name, email: res.email } });
+
             dispatch(setCredentials(res)); // Assuming `res` already contains necessary user info
             setLoading(false);
+
         } catch (err) {
             setLoading(false);
             setError(err?.data?.message || err.error);

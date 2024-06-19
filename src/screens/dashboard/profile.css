@@ -1,0 +1,48 @@
+.main-content {
+    flex-grow: 100;
+    padding: 20px;
+}
+
+.content-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Align items to the top */
+    padding-top: 0px; /* Adjust this value to move content down */
+    padding-left: 100px; /* Adjust this value to move content to the right */
+}
+
+.edit-profile-btn {
+    background-color: grey;
+    border-color: grey;
+    color: black;
+    padding: 5px 10px; /* Adjusted size */
+    font-size: 12px; /* Adjusted size */
+    border-radius: 8px;
+    margin-top: 1px;
+}
+
+.edit-profile-btn:hover {
+    background-color: darkgrey;
+    border-color: darkgrey;
+}
+
+.save-all-btn {
+    background-color: blue;
+    border-color: blue;
+    color: white;
+}
+
+.save-all-btn:hover {
+    background-color: darkblue;
+    border-color: darkblue;
+}
+
+.profile-card {
+    max-width: 950px;
+    width: 150%;
+    margin: 0 auto;
+}
+
+h2 {
+    text-align: center;
+}
