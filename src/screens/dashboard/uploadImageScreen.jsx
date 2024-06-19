@@ -1,32 +1,34 @@
-// src/screens/UploadImageScreen.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDropzone } from 'react-dropzone';
-import { Button, Card, Col, Container, ProgressBar, Row } from 'react-bootstrap';
+import { Button, Card, Container, ProgressBar } from 'react-bootstrap';
+import { useUploadFileMutation } from '../../slices/uploadSlice';
+import { toast } from 'react-toastify';
 
 const UploadImageScreen = () => {
     const navigate = useNavigate();
     const [image, setImage] = useState(null);
     const [progress, setProgress] = useState(0);
 
+    const [uploadFile, { isLoading, isSuccess, isError, error, data }] = useUploadFileMutation();
+
+    useEffect(() => {
+        if (isSuccess) {
+            toast.success('File uploaded successfully');
+            navigate('/add-equipment', { state: { image, fileUrl: data.fileUrl } });
+        } else if (isError) {
+            const errorMessage = error?.data?.message || error.message || 'Upload failed';
+            console.error('Upload error:', error);
+            toast.error(errorMessage);
+        }
+    }, [isSuccess, isError, error, data, navigate, image]);
+
     const onDrop = (acceptedFiles) => {
         if (acceptedFiles.length > 0) {
             const file = acceptedFiles[0];
             setImage(file);
-            uploadImage(file);
+            setProgress(0);
         }
-    };
-
-    const uploadImage = (file) => {
-        const fakeUploadProgress = () => {
-            setProgress((prev) => {
-                if (prev >= 100) return 100;
-                const nextProgress = prev + 10;
-                setTimeout(fakeUploadProgress, 200);
-                return nextProgress;
-            });
-        };
-        fakeUploadProgress();
     };
 
     const handleRemove = () => {
@@ -34,17 +36,30 @@ const UploadImageScreen = () => {
         setProgress(0);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        if (image && progress === 100) {
-            navigate('/add-equipment', { state: { image } });
+        if (image) {
+            let uploadProgress;
+            try {
+                uploadProgress = setInterval(() => {
+                    setProgress((prev) => (prev < 100 ? prev + 10 : 100));
+                }, 200);
+
+                await uploadFile(image).unwrap();
+                clearInterval(uploadProgress);
+                setProgress(100);
+            } catch (error) {
+                console.error('Upload submission error:', error);
+                clearInterval(uploadProgress);
+                setProgress(0);
+            }
         }
     };
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         onDrop,
         accept: 'image/*',
-        maxFiles: 1
+        maxFiles: 1,
     });
 
     return (
@@ -81,8 +96,8 @@ const UploadImageScreen = () => {
                     <Button variant="secondary" onClick={() => navigate('/dashboard')}>
                         Cancel
                     </Button>
-                    <Button variant="primary" onClick={handleSubmit} disabled={!image || progress < 100}>
-                        Continue
+                    <Button variant="primary" onClick={handleSubmit} disabled={!image || isLoading}>
+                        {isLoading ? 'Uploading...' : 'Continue'}
                     </Button>
                 </div>
             </Card>

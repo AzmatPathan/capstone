@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Form } from 'react-bootstrap';
 import { useRegisterMutation } from '../slices/userApiSlice';
 import { toast } from 'react-toastify';
@@ -10,6 +10,8 @@ const RegisterScreen = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [role] = useState('user');
+
+  const navigate = useNavigate();
 
   const [register, { isLoading }] = useRegisterMutation();
 
@@ -23,8 +25,8 @@ const RegisterScreen = () => {
 
     try {
       const res = await register({ name, email, password, role }).unwrap();
-      // Handle successful registration, such as redirecting to login screen
-      console.log(res); // For demonstration purposes
+      toast.success('User registered successfully');
+      navigate('/');
     } catch (err) {
       toast.error(err?.data?.message || err.error);
     }
@@ -88,12 +90,12 @@ const RegisterScreen = () => {
                     />
                     <label className="form-label" htmlFor="confirmPassword">Confirm Password</label>
                   </div>
-                  
+
                   <button className="btn btn-outline-light btn-lg px-5" type="submit" disabled={isLoading}>
                     {isLoading ? 'Loading...' : 'Register'}
                   </button>
                 </form>
-                
+
                 <div className="mt-3">
                   <p className="mb-0">
                     Already have an account? <Link to="/login" className="text-white-50 fw-bold">Login</Link>
