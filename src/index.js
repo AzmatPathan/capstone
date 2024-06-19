@@ -1,8 +1,7 @@
+import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import store from './store';
+import { HelmetProvider } from 'react-helmet-async';
 import { Provider } from 'react-redux';
 import {
   createBrowserRouter,
@@ -10,18 +9,21 @@ import {
   Route,
   RouterProvider,
 } from 'react-router-dom';
-import { HelmetProvider } from 'react-helmet-async';
-import LoginScreen from './screens/loginScreen';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import RegisterScreen from './screens/registerScreen';
+import App from './App';
+import PrivateRoute from './components/PrivateRoute';
+import './index.css';
+import EquipmentDetailScreen from './screens/dashboard/equipmentDetailScreen';
+import EquipmentReviewScreen from './screens/dashboard/equipmentReviewScreen';
 import EquipmentScreen from './screens/dashboard/equipmentScreen';
-import HomeScreen from './screens/homeScreen';
-import ForgotPassword from './screens/ForgotPassword';
+import Profile from './screens/dashboard/Profile';
+import ReviewDetailScreen from './screens/dashboard/reviewDetailScreen';
 import UploadImageScreen from './screens/dashboard/uploadImageScreen';
 import UserScreen from './screens/dashboard/userScreen';
-import EquipmentDetailScreen from './screens/dashboard/equipmentDetailScreen';
-import PrivateRoute from './components/PrivateRoute';
-import Profile from './screens/dashboard/Profile';
+import ForgotPassword from './screens/ForgotPassword';
+import HomeScreen from './screens/homeScreen';
+import LoginScreen from './screens/loginScreen';
+import RegisterScreen from './screens/registerScreen';
+import store from './store';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -33,10 +35,12 @@ const router = createBrowserRouter(
       {/* Registered users */}
       <Route path='' element={<PrivateRoute />}>
         <Route path='/dashboard' element={<EquipmentScreen />} />
+        <Route path="/reviews" element={<EquipmentReviewScreen />} />
+        <Route path="/reviews/:id" element={<ReviewDetailScreen />} />
         <Route path="/upload-image" element={<UploadImageScreen />} />
         <Route path="/equipments/:id" element={<EquipmentDetailScreen />} />
         <Route path="/add-equipment" element={<EquipmentDetailScreen />} />
-        <Route path="/profile" element={<Profile />} /> 
+        <Route path="/profile" element={<Profile />} />
         <Route path="/user" element={<UserScreen />} />
       </Route>
     </Route>
