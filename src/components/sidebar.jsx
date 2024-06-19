@@ -32,7 +32,7 @@ const Sidebar = ({ sidebarOpen }) => {
                     <FaHome className="mr-2" /> Equipments
                 </Nav.Link>
                 <Nav.Link
-                    href="#"
+                    href="/user"
                     className={activeItem === 'Users' ? 'text-primary font-weight-bold' : 'text-dark'}
                     onClick={() => handleItemClick('Users')}
                 >

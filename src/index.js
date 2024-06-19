@@ -18,6 +18,7 @@ import EquipmentScreen from './screens/dashboard/equipmentScreen';
 import HomeScreen from './screens/homeScreen';
 import ForgotPassword from './screens/ForgotPassword';
 import UploadImageScreen from './screens/dashboard/uploadImageScreen';
+import UserScreen from './screens/dashboard/userScreen';
 import EquipmentDetailScreen from './screens/dashboard/equipmentDetailScreen';
 import PrivateRoute from './components/PrivateRoute';
 
@@ -34,6 +35,7 @@ const router = createBrowserRouter(
         <Route path="/upload-image" element={<UploadImageScreen />} />
         <Route path="/equipments/:id" element={<EquipmentDetailScreen />} />
         <Route path="/add-equipment" element={<EquipmentDetailScreen />} />
+        <Route path="/user" element={<UserScreen />} />
       </Route>
     </Route>
   )
