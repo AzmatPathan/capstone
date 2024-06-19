@@ -11,7 +11,7 @@ const App = () => {
   return (
     <>
       <ToastContainer />
-      <Header />
+      <Header showAuthButtons={true} />
       <Container>
           <Outlet />
         </Container>

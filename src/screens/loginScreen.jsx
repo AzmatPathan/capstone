@@ -4,11 +4,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { useLoginMutation } from '../slices/userApiSlice';
 import { setCredentials } from '../slices/authSlice';
-// import { ReactComponent as ExIconEye } from './ex-icon-eye.svg'; // Assuming this is the icon used for the password field
 
 const LoginScreen = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [userName, setUserName] = useState(''); // Add this state to store user name
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -19,7 +19,7 @@ const LoginScreen = () => {
 
     const { search } = useLocation();
     const sp = new URLSearchParams(search);
-    const redirect = sp.get('redirect') || '/';
+    const redirect = sp.get('redirect') || '/dashboard';
 
     useEffect(() => {
         if (userInfo) {
@@ -32,7 +32,8 @@ const LoginScreen = () => {
         try {
             const res = await login({ email, password }).unwrap();
             dispatch(setCredentials({ ...res }));
-            navigate(redirect);
+            setUserName(res.name); // Assuming the API response contains the user's name
+            navigate('/profile', { state: { userName: res.name, email: res.email } });
         } catch (err) {
             toast.error(err?.data?.message || err.error);
         }
