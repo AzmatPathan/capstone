@@ -1,3 +1,4 @@
+import { UPLOAD_URL } from '../constants';
 import { apiSlice } from './apiSlice';
 
 export const uploadSlice = apiSlice.injectEndpoints({
@@ -31,7 +32,14 @@ export const uploadSlice = apiSlice.injectEndpoints({
                 }
             },
         }),
+        fetchUploadsData: builder.query({
+            query: () => ({
+                url: `${UPLOAD_URL}`,
+                method: 'GET',
+            }),
+            providesTags: ['Upload'],
+        }),
     }),
 });
 
-export const { useUploadFileMutation } = uploadSlice;
+export const { useUploadFileMutation, useFetchUploadsDataQuery } = uploadSlice;

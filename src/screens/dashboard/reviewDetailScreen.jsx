@@ -2,17 +2,17 @@ import React, { useState } from 'react';
 import { Button, Col, Container, Modal, Row } from 'react-bootstrap';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useGetReviewDetailsQuery, useUpdateReviewStatusMutation } from '../../slices/dashboardSlice';
+import { useSelector } from 'react-redux';
 
 const ReviewDetailScreen = () => {
     const { id } = useParams();
     const navigate = useNavigate();
 
     const { data: review, isLoading, error, refetch } = useGetReviewDetailsQuery(id);
+    const [updateReviewStatus] = useUpdateReviewStatusMutation();
 
-    // Ensure updateReviewStatus is properly structured
-    const { mutate: updateReviewStatus } = useUpdateReviewStatusMutation();
-
-    const userId = 'user123'; // Replace with actual userId retrieval logic
+    const userInfo = useSelector((state) => state.auth.userInfo);
+    const userId = userInfo?.id;
 
     const [showApproveModal, setShowApproveModal] = useState(false);
     const [showRejectModal, setShowRejectModal] = useState(false);
@@ -22,10 +22,9 @@ const ReviewDetailScreen = () => {
 
     const handleApprove = async () => {
         try {
-            // Ensure updateReviewStatus function is available
             await updateReviewStatus({ id, adminId: userId, status: 'Approved' });
             setShowApproveModal(false);
-            refetch(); // Optionally, refetch review details
+            refetch();
         } catch (error) {
             console.error('Error approving review:', error);
         }
@@ -33,10 +32,9 @@ const ReviewDetailScreen = () => {
 
     const handleReject = async () => {
         try {
-            // Ensure updateReviewStatus function is available
             await updateReviewStatus({ id, adminId: userId, status: 'Rejected' });
             setShowRejectModal(false);
-            refetch(); // Optionally, refetch review details
+            refetch();
         } catch (error) {
             console.error('Error rejecting review:', error);
         }
@@ -64,14 +62,14 @@ const ReviewDetailScreen = () => {
                         <h2>Review Details</h2>
                         <Row className="mt-4">
                             <Col>
-                                <h4>Review ID: {review.data.equipment_id}</h4>
-                                <p><strong>Barcode:</strong> {review.data.barcode}</p>
-                                <p><strong>Manufacturer:</strong> {review.data.manufacturer}</p>
-                                <p><strong>Model Number:</strong> {review.data.model_number}</p>
-                                <p><strong>Serial Number:</strong> {review.data.serial_number}</p>
-                                <p><strong>Status:</strong> {review.data.status}</p>
-                                <p><strong>Reviewed Date:</strong> {review.data.reviewed_at}</p>
-                                <p><strong>Review Text:</strong> {review.data.reviewed_data}</p>
+                                <h4>Review ID: {review.equipment_id}</h4>
+                                <p><strong>Barcode:</strong> {review.barcode}</p>
+                                <p><strong>Manufacturer:</strong> {review.manufacturer}</p>
+                                <p><strong>Model Number:</strong> {review.model_number}</p>
+                                <p><strong>Serial Number:</strong> {review.serial_number}</p>
+                                <p><strong>Status:</strong> {review.status}</p>
+                                <p><strong>Reviewed Date:</strong> {review.reviewed_at}</p>
+                                <p><strong>Review Text:</strong> {review.reviewed_data}</p>
                             </Col>
                         </Row>
 

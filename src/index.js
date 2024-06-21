@@ -24,6 +24,7 @@ import HomeScreen from './screens/homeScreen';
 import LoginScreen from './screens/loginScreen';
 import RegisterScreen from './screens/registerScreen';
 import store from './store';
+import UploadsScreen from './screens/dashboard/uploadScreen';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -40,6 +41,7 @@ const router = createBrowserRouter(
         <Route path="/upload-image" element={<UploadImageScreen />} />
         <Route path="/equipments/:id" element={<EquipmentDetailScreen />} />
         <Route path="/add-equipment" element={<EquipmentDetailScreen />} />
+        <Route path="/uploads" element={<UploadsScreen />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/user" element={<UserScreen />} />
       </Route>
