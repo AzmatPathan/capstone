@@ -2,11 +2,14 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { useState, useEffect } from 'react';
 import { Button, Col, Container, Form, Row, Table } from 'react-bootstrap';
 import Sidebar from '../../components/sidebar';
-import { useGetReviewDataQuery } from '../../slices/dashboardSlice';
+import { useGetReviewDataQuery, useAssignReviewMutation } from '../../slices/dashboardSlice'; // Assuming useAssignReviewMutation is imported
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 const EquipmentReviewScreen = () => {
     const { data, isLoading, error } = useGetReviewDataQuery();
+    const { userInfo } = useSelector((state) => state.auth); // Assuming auth slice contains user info
+    const userId = userInfo?._id;
 
     const [barcode, setBarcode] = useState('');
     const [equipmentId, setEquipmentId] = useState('');
@@ -17,12 +20,14 @@ const EquipmentReviewScreen = () => {
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const navigate = useNavigate();
 
+    const [assignReview, { isLoading: isAssigning }] = useAssignReviewMutation();
+
     useEffect(() => {
         if (data && data.success) {
             const filtered = data.data.filter(review => {
                 const matchesBarcode = review.barcode.toLowerCase().includes(barcode.toLowerCase());
                 const matchesEquipmentId = review.equipment_id.toString().toLowerCase().includes(equipmentId.toLowerCase());
-                const matchesUsername = review.created_by.toLowerCase().includes(username.toLowerCase()) || (review.reviewed_by && review.reviewed_by.toLowerCase().includes(username.toLowerCase()));
+                const matchesUsername = review.created_by?.toLowerCase().includes(username.toLowerCase()) || (review.reviewed_by && review.reviewed_by.toLowerCase().includes(username.toLowerCase()));
                 const matchesStartDate = startDate ? new Date(review.created_at) >= new Date(startDate) || (review.reviewed_at && new Date(review.reviewed_at) >= new Date(startDate)) : true;
                 const matchesEndDate = endDate ? new Date(review.created_at) <= new Date(endDate) || (review.reviewed_at && new Date(review.reviewed_at) <= new Date(endDate)) : true;
 
@@ -40,7 +45,32 @@ const EquipmentReviewScreen = () => {
     const handleToggleSidebar = () => setSidebarOpen(!sidebarOpen);
     const handleNewReview = () => navigate('/add-review');
     const handleExport = () => { /* Implement logic to export review data */ };
-    const handleRowClick = (reviewId) => navigate(`/reviews/${reviewId}`);
+
+    const handleRowClick = (reviewId) => {
+        // Navigate to details page when clicking on row (excluding "Assign to Me" button)
+        navigate(`/reviews/${reviewId}`);
+    };
+
+    const handleAssignReview = async (reviewId, event) => {
+        try {
+            event.stopPropagation(); // Prevents event propagation to the parent row click handler
+            const response = await assignReview({ reviewId, adminId: userId });
+            if (response.data.success) {
+                // Update the local data to reflect the assigned review
+                const updatedData = filteredData.map(review => {
+                    if (review.review_id === reviewId) {
+                        return { ...review, reviewed_by: userInfo.username };
+                    }
+                    return review;
+                });
+                setFilteredData(updatedData);
+            } else {
+                console.error('Error assigning review:', response.data.message);
+            }
+        } catch (error) {
+            console.error('Error assigning review:', error);
+        }
+    };
 
     return (
         <Container fluid>
@@ -147,7 +177,21 @@ const EquipmentReviewScreen = () => {
                                         <td>{review.barcode}</td>
                                         <td>{review.created_by}</td>
                                         <td>{new Date(review.created_at).toLocaleString()}</td>
-                                        <td>{review.reviewed_by || 'N/A'}</td>
+                                        <td>
+                                            {review.reviewed_by ? (
+                                                review.reviewed_by
+                                            ) : (
+                                                <Button
+                                                    variant="outline-primary"
+                                                    size="sm"
+                                                    onClick={(event) => handleAssignReview(review.review_id, event)}
+                                                    disabled={isAssigning}
+                                                    style={{ cursor: 'pointer' }}
+                                                >
+                                                    Assign to Me
+                                                </Button>
+                                            )}
+                                        </td>
                                         <td>{review.reviewed_at ? new Date(review.reviewed_at).toLocaleString() : 'N/A'}</td>
                                         <td>{review.status}</td>
                                     </tr>

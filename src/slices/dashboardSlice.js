@@ -25,13 +25,20 @@ export const dashboardSlice = apiSlice.injectEndpoints({
             providesTags: ['Review'],
         }),
         updateReviewStatus: builder.mutation({
-            query: ({ reviewId, adminId, status }) => ({
-                url: `${REVIEW_URL}/${reviewId}/status`,
+            query: ({ id, adminId, status }) => ({
+                url: `${REVIEW_URL}/${id}/status`,
                 method: 'PUT',
-                body: { reviewId, adminId, status },
+                body: { adminId, status },
+            }),
+        }),
+        assignReview: builder.mutation({
+            query: ({ reviewId, adminId }) => ({
+                url: `${REVIEW_URL}/assign-review`,
+                method: 'POST',
+                body: { reviewId, adminId },
             }),
         }),
     }),
 });
 
-export const { useGetDashboardDataQuery, useGetReviewDataQuery, useGetReviewDetailsQuery, useUpdateReviewStatusMutation } = dashboardSlice;
+export const { useGetDashboardDataQuery, useGetReviewDataQuery, useGetReviewDetailsQuery, useUpdateReviewStatusMutation, useAssignReviewMutation } = dashboardSlice;

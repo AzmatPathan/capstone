@@ -12,7 +12,7 @@ const ReviewDetailScreen = () => {
     const [updateReviewStatus] = useUpdateReviewStatusMutation();
 
     const userInfo = useSelector((state) => state.auth.userInfo);
-    const userId = userInfo?.id;
+    const userId = userInfo?._id;
 
     const [showApproveModal, setShowApproveModal] = useState(false);
     const [showRejectModal, setShowRejectModal] = useState(false);
