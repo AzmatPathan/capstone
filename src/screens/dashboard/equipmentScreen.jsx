@@ -145,9 +145,9 @@ const EquipmentScreen = () => {
                                         <td>{equipment.equipment_id}</td>
                                         <td>{equipment.barcode}</td>
                                         <td>{equipment.created_by}</td>
-                                        <td>{new Date(equipment.created_at).toLocaleString()}</td>
+                                        <td>{new Date(equipment.created_at).toLocaleDateString()}</td>
                                         <td>{equipment.reviewed_by || 'N/A'}</td>
-                                        <td>{equipment.reviewed_at ? new Date(equipment.reviewed_at).toLocaleString() : 'N/A'}</td>
+                                        <td>{equipment.reviewed_at ? new Date(equipment.reviewed_at).toLocaleDateString() : 'N/A'}</td>
                                         <td>{equipment.status}</td>
                                     </tr>
                                 ))}

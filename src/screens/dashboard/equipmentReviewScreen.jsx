@@ -177,7 +177,7 @@ const EquipmentReviewScreen = () => {
                                         <td>{review.equipment_id}</td>
                                         <td>{review.barcode}</td>
                                         <td>{review.created_by}</td>
-                                        <td>{new Date(review.created_at).toLocaleString()}</td>
+                                        <td>{new Date(review.created_at).toLocaleDateString()}</td>
                                         <td>
                                             {review.reviewed_by || !isAdmin ? (
                                                 review.reviewed_by || 'N/A'
@@ -193,7 +193,7 @@ const EquipmentReviewScreen = () => {
                                                 </Button>
                                             )}
                                         </td>
-                                        <td>{review.reviewed_at ? new Date(review.reviewed_at).toLocaleString() : 'N/A'}</td>
+                                        <td>{review.reviewed_at ? new Date(review.reviewed_at).toLocaleDateString() : 'N/A'}</td>
                                         <td>{review.status}</td>
                                     </tr>
                                 ))}

@@ -127,7 +127,7 @@ const UploadsScreen = () => {
                                             </a>
                                         </td>
 
-                                        <td>{new Date(upload.equipment_created_at).toLocaleString()}</td>
+                                        <td>{new Date(upload.equipment_created_at).toLocaleDateString()}</td>
                                         <td>{upload.review_status || 'Pending'}</td>
                                     </tr>
                                 ))}
