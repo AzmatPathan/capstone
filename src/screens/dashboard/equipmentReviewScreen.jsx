@@ -10,6 +10,7 @@ const EquipmentReviewScreen = () => {
     const { data, isLoading, error } = useGetReviewDataQuery();
     const { userInfo } = useSelector((state) => state.auth); // Assuming auth slice contains user info
     const userId = userInfo?._id;
+    const isAdmin = userInfo?.role === 'admin';
 
     const [barcode, setBarcode] = useState('');
     const [equipmentId, setEquipmentId] = useState('');
@@ -178,8 +179,8 @@ const EquipmentReviewScreen = () => {
                                         <td>{review.created_by}</td>
                                         <td>{new Date(review.created_at).toLocaleString()}</td>
                                         <td>
-                                            {review.reviewed_by ? (
-                                                review.reviewed_by
+                                            {review.reviewed_by || !isAdmin ? (
+                                                review.reviewed_by || 'N/A'
                                             ) : (
                                                 <Button
                                                     variant="outline-primary"
