@@ -1,5 +1,5 @@
+import { DASHBOARD_URL, REVIEW_URL } from '../constants';
 import { apiSlice } from './apiSlice';
-import { REVIEW_URL, DASHBOARD_URL } from '../constants';
 
 export const dashboardSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
@@ -38,7 +38,14 @@ export const dashboardSlice = apiSlice.injectEndpoints({
                 body: { reviewId, adminId },
             }),
         }),
+        exportEquipments: builder.mutation({
+            query: () => ({
+                url: `${DASHBOARD_URL}/export`,
+                method: 'GET',
+                responseType: 'text/csv',
+            }),
+        }),
     }),
 });
 
-export const { useGetDashboardDataQuery, useGetReviewDataQuery, useGetReviewDetailsQuery, useUpdateReviewStatusMutation, useAssignReviewMutation } = dashboardSlice;
+export const { useGetDashboardDataQuery, useGetReviewDataQuery, useGetReviewDetailsQuery, useUpdateReviewStatusMutation, useAssignReviewMutation, useExportEquipmentsMutation } = dashboardSlice;

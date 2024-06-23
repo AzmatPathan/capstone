@@ -1,13 +1,14 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'font-awesome/css/font-awesome.min.css';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Col, Container, Form, Row, Table } from 'react-bootstrap';
-import Sidebar from '../../components/sidebar';
-import { useGetDashboardDataQuery } from '../../slices/dashboardSlice';
 import { useNavigate } from 'react-router-dom';
+import Sidebar from '../../components/sidebar';
+import { DASHBOARD_URL } from '../../constants';
+import { useGetDashboardDataQuery } from '../../slices/dashboardSlice'; // Import the correct query hook
+import { csvExport } from '../../utils/csvExport';
 
 const EquipmentScreen = () => {
-    const { data, isLoading, error } = useGetDashboardDataQuery();
+    const navigate = useNavigate();
+    const { data: dashboardData, isLoading: isDashboardLoading, error: dashboardError } = useGetDashboardDataQuery();
 
     const [barcode, setBarcode] = useState('');
     const [equipmentId, setEquipmentId] = useState('');
@@ -16,32 +17,51 @@ const EquipmentScreen = () => {
     const [endDate, setEndDate] = useState('');
     const [filteredData, setFilteredData] = useState([]);
     const [sidebarOpen, setSidebarOpen] = useState(true);
-    const navigate = useNavigate();
 
+    // Handle export functionality
+    const handleExport = async () => {
+        try {
+            await csvExport(`${DASHBOARD_URL}/export/equipment`);
+        } catch (error) {
+            console.error('Error exporting equipments:', error);
+            alert('Failed to export equipments');
+        }
+    };
+
+    // Filter data based on search criteria
     useEffect(() => {
-        if (data && data.success) {
-            const filtered = data.data.filter(equipment => {
+        if (dashboardData && dashboardData.success) {
+            const filtered = dashboardData.data.filter(equipment => {
                 const matchesBarcode = equipment.barcode.toLowerCase().includes(barcode.toLowerCase());
                 const matchesEquipmentId = equipment.equipment_id.toString().toLowerCase().includes(equipmentId.toLowerCase());
                 const matchesUsername = equipment.created_by.toLowerCase().includes(username.toLowerCase()) || (equipment.reviewed_by && equipment.reviewed_by.toLowerCase().includes(username.toLowerCase()));
                 const matchesStartDate = startDate ? new Date(equipment.created_at) >= new Date(startDate) || (equipment.reviewed_at && new Date(equipment.reviewed_at) >= new Date(startDate)) : true;
                 const matchesEndDate = endDate ? new Date(equipment.created_at) <= new Date(endDate) || (equipment.reviewed_at && new Date(equipment.reviewed_at) <= new Date(endDate)) : true;
-
                 return matchesBarcode && matchesEquipmentId && matchesUsername && matchesStartDate && matchesEndDate;
             });
             setFilteredData(filtered);
         }
-    }, [data, barcode, equipmentId, username, startDate, endDate]);
+    }, [dashboardData, barcode, equipmentId, username, startDate, endDate]);
 
-    const handleBarcodeChange = (e) => setBarcode(e.target.value);
-    const handleEquipmentIdChange = (e) => setEquipmentId(e.target.value);
-    const handleUsernameChange = (e) => setUsername(e.target.value);
-    const handleStartDateChange = (e) => setStartDate(e.target.value);
-    const handleEndDateChange = (e) => setEndDate(e.target.value);
-    const handleToggleSidebar = () => setSidebarOpen(!sidebarOpen);
-    const handleNewEquipment = () => navigate('/upload-image');
-    const handleExport = () => { /* Implement logic to export equipment data */ };
-    const handleRowClick = (equipmentId) => navigate(`/equipments/${equipmentId}`);
+    // Event handlers for input changes
+    const handleInputChange = (e, setter) => {
+        setter(e.target.value);
+    };
+
+    // Toggle sidebar visibility
+    const handleToggleSidebar = () => {
+        setSidebarOpen(!sidebarOpen);
+    };
+
+    // Navigate to upload image screen
+    const handleNewEquipment = () => {
+        navigate('/upload-image');
+    };
+
+    // Navigate to equipment details screen on row click
+    const handleRowClick = (equipmentId) => {
+        navigate(`/equipments/${equipmentId}`);
+    };
 
     return (
         <Container fluid>
@@ -49,10 +69,7 @@ const EquipmentScreen = () => {
                 <Col xs={12} md={sidebarOpen ? 2 : 0} className="p-0">
                     {sidebarOpen && <Sidebar sidebarOpen={sidebarOpen} />}
                 </Col>
-                <Col xs={12} md={sidebarOpen ? 10 : 12} className="pt-3" style={{
-                    backgroundColor: '#f8f9fa',
-                    marginTop: '56px' 
-                }}>
+                <Col xs={12} md={sidebarOpen ? 10 : 12} className="pt-3" style={{ backgroundColor: '#f8f9fa', marginTop: '56px' }}>
                     <Row className="mb-4">
                         <Col>
                             <h2>Equipments Information</h2>
@@ -73,60 +90,39 @@ const EquipmentScreen = () => {
                         <Col md={2}>
                             <Form.Group controlId="barcode">
                                 <Form.Label>Barcode</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    placeholder="Enter Barcode"
-                                    value={barcode}
-                                    onChange={handleBarcodeChange}
-                                />
+                                <Form.Control type="text" placeholder="Enter Barcode" value={barcode} onChange={(e) => handleInputChange(e, setBarcode)} />
                             </Form.Group>
                         </Col>
                         <Col md={2}>
                             <Form.Group controlId="equipmentId">
                                 <Form.Label>Equipment ID</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    placeholder="Enter Equipment ID"
-                                    value={equipmentId}
-                                    onChange={handleEquipmentIdChange}
-                                />
+                                <Form.Control type="text" placeholder="Enter Equipment ID" value={equipmentId} onChange={(e) => handleInputChange(e, setEquipmentId)} />
                             </Form.Group>
                         </Col>
                         <Col md={3}>
                             <Form.Group controlId="username">
                                 <Form.Label>Username</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    placeholder="Enter Username"
-                                    value={username}
-                                    onChange={handleUsernameChange}
-                                />
+                                <Form.Control type="text" placeholder="Enter Username" value={username} onChange={(e) => handleInputChange(e, setUsername)} />
                             </Form.Group>
                         </Col>
                         <Col md={2}>
                             <Form.Group controlId="startDate">
                                 <Form.Label>Start Date</Form.Label>
-                                <Form.Control
-                                    type="date"
-                                    value={startDate}
-                                    onChange={handleStartDateChange}
-                                />
+                                <Form.Control type="date" value={startDate} onChange={(e) => handleInputChange(e, setStartDate)} />
                             </Form.Group>
                         </Col>
                         <Col md={2}>
                             <Form.Group controlId="endDate">
                                 <Form.Label>End Date</Form.Label>
-                                <Form.Control
-                                    type="date"
-                                    value={endDate}
-                                    onChange={handleEndDateChange}
-                                />
+                                <Form.Control type="date" value={endDate} onChange={(e) => handleInputChange(e, setEndDate)} />
                             </Form.Group>
                         </Col>
                     </Row>
-                    {isLoading && <div>Loading...</div>}
-                    {error && <div>Error fetching data</div>}
-                    {filteredData && (
+                    {isDashboardLoading ? (
+                        <div>Loading...</div>
+                    ) : dashboardError ? (
+                        <div>Error fetching data</div>
+                    ) : filteredData && filteredData.length > 0 ? (
                         <Table striped bordered hover className="bg-white">
                             <thead>
                                 <tr>
@@ -153,6 +149,8 @@ const EquipmentScreen = () => {
                                 ))}
                             </tbody>
                         </Table>
+                    ) : (
+                        <div>No data found</div>
                     )}
                 </Col>
             </Row>
