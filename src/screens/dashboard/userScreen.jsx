@@ -42,8 +42,8 @@ const UserScreen = () => {
         try {
             await csvExport(`${DASHBOARD_URL}/export/user`,'users.csv');
         } catch (error) {
-            console.error('Error exporting equipments:', error);
-            alert('Failed to export equipments');
+            console.error('Error exporting users:', error);
+            alert('Failed to export users');
         }
     };
 
