@@ -5,6 +5,8 @@ import Sidebar from '../../components/sidebar';
 import { useGetReviewDataQuery, useAssignReviewMutation } from '../../slices/dashboardSlice'; // Assuming useAssignReviewMutation is imported
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { DASHBOARD_URL } from '../../constants';
+import { csvExport } from '../../utils/csvExport';
 
 const EquipmentReviewScreen = () => {
     const { data, isLoading, error } = useGetReviewDataQuery();
@@ -45,7 +47,16 @@ const EquipmentReviewScreen = () => {
     const handleEndDateChange = (e) => setEndDate(e.target.value);
     const handleToggleSidebar = () => setSidebarOpen(!sidebarOpen);
     const handleNewReview = () => navigate('/add-review');
-    const handleExport = () => { /* Implement logic to export review data */ };
+
+    // Handle export functionality
+    const handleExport = async () => {
+        try {
+            await csvExport(`${DASHBOARD_URL}/export/review`,'reviews.csv');
+        } catch (error) {
+            console.error('Error exporting equipments:', error);
+            alert('Failed to export equipments');
+        }
+    };
 
     const handleRowClick = (reviewId) => {
         // Navigate to details page when clicking on row (excluding "Assign to Me" button)

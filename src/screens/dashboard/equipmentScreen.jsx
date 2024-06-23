@@ -21,7 +21,7 @@ const EquipmentScreen = () => {
     // Handle export functionality
     const handleExport = async () => {
         try {
-            await csvExport(`${DASHBOARD_URL}/export/equipment`);
+            await csvExport(`${DASHBOARD_URL}/export/equipment`,'equipments.csv');
         } catch (error) {
             console.error('Error exporting equipments:', error);
             alert('Failed to export equipments');

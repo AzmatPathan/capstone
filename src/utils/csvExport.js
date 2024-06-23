@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const csvExport = async (path) => {
+export const csvExport = async (path,filename) => {
     try {
         const response = await axios({
             url: `${path}`,
@@ -12,7 +12,7 @@ export const csvExport = async (path) => {
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', 'equipments.csv');
+        link.setAttribute('download', filename);
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
