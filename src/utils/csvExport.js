@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const csvExport = async (path,filename) => {
+export const csvExport = async (path, filename) => {
     try {
         const response = await axios({
             url: `${path}`,
@@ -17,7 +17,7 @@ export const csvExport = async (path,filename) => {
         link.click();
         document.body.removeChild(link);
     } catch (error) {
-        console.error('Error exporting equipments:', error);
-        alert('Failed to export equipments');
+        console.error('Error exporting ', error);
+        alert('Failed to export');
     }
 };

@@ -5,6 +5,8 @@ import { Button, Col, Container, Form, Row, Table } from 'react-bootstrap';
 import Sidebar from '../../components/sidebar';
 import { useGetUserDataQuery } from '../../slices/userApiSlice';
 import { useNavigate } from 'react-router-dom';
+import { csvExport } from '../../utils/csvExport';
+import { DASHBOARD_URL } from '../../constants';
 
 const UserScreen = () => {
     const { data, isLoading, error } = useGetUserDataQuery();
@@ -36,8 +38,13 @@ const UserScreen = () => {
         navigate('/upload-image');
     };
 
-    const handleExport = () => {
-        // Implement logic to export user data
+    const handleExport = async () => {
+        try {
+            await csvExport(`${DASHBOARD_URL}/export/user`,'users.csv');
+        } catch (error) {
+            console.error('Error exporting equipments:', error);
+            alert('Failed to export equipments');
+        }
     };
 
     const handleRowClick = (userId) => {
