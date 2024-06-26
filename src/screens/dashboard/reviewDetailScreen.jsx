@@ -13,9 +13,11 @@ const ReviewDetailScreen = () => {
 
     const userInfo = useSelector((state) => state.auth.userInfo);
     const userId = userInfo?._id;
-    const userRole = userInfo?.role; // Assuming user role is stored in userInfo
+    const userRole = userInfo?.role;
 
-    const isAdmin = userRole === 'admin'; // Check if user is admin
+    const isAdmin = userRole === 'admin'; 
+
+    const isApproved = review?.data.status === 'Approved';
 
     const [showApproveModal, setShowApproveModal] = useState(false);
     const [showRejectModal, setShowRejectModal] = useState(false);
@@ -92,7 +94,7 @@ const ReviewDetailScreen = () => {
                             </Col>
                         </Row>
 
-                        {isAdmin && (
+                        {isAdmin && !isApproved && (
                             <Row className="mt-4">
                                 <Col>
                                     <Button variant="success" onClick={handleApproveClick}>

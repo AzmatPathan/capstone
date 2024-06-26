@@ -3,7 +3,7 @@ import { Button, Col, Container, Form, Row, Table } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../../components/sidebar';
 import { DASHBOARD_URL } from '../../constants';
-import { useGetDashboardDataQuery } from '../../slices/dashboardSlice'; // Import the correct query hook
+import { useGetDashboardDataQuery } from '../../slices/dashboardSlice';
 import { csvExport } from '../../utils/csvExport';
 
 const EquipmentScreen = () => {

@@ -32,6 +32,8 @@ const EquipmentDetailScreen = () => {
     const [showAlert, setShowAlert] = useState({ message: '', variant: '' });
     const [showModal, setShowModal] = useState(false);
     const [sidebarOpen, setSidebarOpen] = useState(true);
+    const isDisabled = equipmentDetail?.status === 'Approved';
+
 
     // Update formData from location state when an image is uploaded
     useEffect(() => {
@@ -103,11 +105,6 @@ const EquipmentDetailScreen = () => {
         setSidebarOpen(!sidebarOpen);
     };
 
-    // Placeholder function for export functionality
-    const handleExport = () => {
-        console.log('Export functionality to be implemented');
-    };
-
     // Navigate back function
     const handleBack = () => {
         navigate(-1);
@@ -131,9 +128,6 @@ const EquipmentDetailScreen = () => {
                             <Button variant="primary" onClick={handleToggleSidebar} className="mr-2">
                                 {sidebarOpen ? 'Hide Sidebar' : 'Show Sidebar'}
                             </Button>
-                            <Button variant="outline-secondary" onClick={handleExport} className="mr-2">
-                                EXPORT
-                            </Button>
                             <Button variant="secondary" onClick={handleBack}>
                                 Back
                             </Button>
@@ -145,7 +139,15 @@ const EquipmentDetailScreen = () => {
                         <FormContainer>
                             <Form onSubmit={handleSubmit}>
                                 {fetchError && <Alert variant="danger">{fetchError.message}</Alert>}
-                                {showAlert.message && <Alert variant={showAlert.variant} onClose={() => setShowAlert({ message: '', variant: '' })} dismissible>{showAlert.message}</Alert>}
+                                {showAlert.message && (
+                                    <Alert
+                                        variant={showAlert.variant}
+                                        onClose={() => setShowAlert({ message: '', variant: '' })}
+                                        dismissible
+                                    >
+                                        {showAlert.message}
+                                    </Alert>
+                                )}
                                 <Row>
                                     <Col md={6}>
                                         <Form.Group className="mb-3" controlId="formEquipmentID">
@@ -156,7 +158,7 @@ const EquipmentDetailScreen = () => {
                                                 name="equipment_id"
                                                 value={formData.equipment_id}
                                                 onChange={handleChange}
-                                                disabled={!!id}
+                                                disabled={!!id || isDisabled}
                                             />
                                         </Form.Group>
                                     </Col>
@@ -169,6 +171,7 @@ const EquipmentDetailScreen = () => {
                                                 name="barcode"
                                                 value={formData.barcode}
                                                 onChange={handleChange}
+                                                disabled={isDisabled}
                                             />
                                         </Form.Group>
                                     </Col>
@@ -183,6 +186,7 @@ const EquipmentDetailScreen = () => {
                                                 name="manufacturer"
                                                 value={formData.manufacturer}
                                                 onChange={handleChange}
+                                                disabled={isDisabled}
                                             />
                                         </Form.Group>
                                     </Col>
@@ -195,6 +199,7 @@ const EquipmentDetailScreen = () => {
                                                 name="model_number"
                                                 value={formData.model_number}
                                                 onChange={handleChange}
+                                                disabled={isDisabled}
                                             />
                                         </Form.Group>
                                     </Col>
@@ -209,6 +214,7 @@ const EquipmentDetailScreen = () => {
                                                 name="serial_number"
                                                 value={formData.serial_number}
                                                 onChange={handleChange}
+                                                disabled={isDisabled}
                                             />
                                         </Form.Group>
                                     </Col>
@@ -221,6 +227,7 @@ const EquipmentDetailScreen = () => {
                                                 name="capacity"
                                                 value={formData.capacity}
                                                 onChange={handleChange}
+                                                disabled={isDisabled}
                                             />
                                         </Form.Group>
                                     </Col>
@@ -234,6 +241,7 @@ const EquipmentDetailScreen = () => {
                                                 name="date"
                                                 value={formData.date}
                                                 onChange={handleChange}
+                                                disabled={isDisabled}
                                             />
                                         </Form.Group>
                                     </Col>
@@ -246,6 +254,7 @@ const EquipmentDetailScreen = () => {
                                                 name="speed"
                                                 value={formData.speed}
                                                 onChange={handleChange}
+                                                disabled={isDisabled}
                                             />
                                         </Form.Group>
                                     </Col>
@@ -260,11 +269,11 @@ const EquipmentDetailScreen = () => {
                                                 name="voltage"
                                                 value={formData.voltage}
                                                 onChange={handleChange}
+                                                disabled={isDisabled}
                                             />
                                         </Form.Group>
                                     </Col>
                                     <Col md={6}>
-
                                         <Form.Group className="mb-3" controlId="formAdditionalDetails">
                                             <Form.Label>Additional Details</Form.Label>
                                             <Form.Control
@@ -273,15 +282,19 @@ const EquipmentDetailScreen = () => {
                                                 name="additional_details"
                                                 value={formData.additional_details}
                                                 onChange={handleChange}
+                                                disabled={isDisabled}
                                             />
                                         </Form.Group>
                                     </Col>
                                 </Row>
-                                <Button variant="primary" type="submit">
-                                    {id ? 'Update Equipment' : 'Add Equipment'}
-                                </Button>
+                                {!isDisabled && (
+                                    <Button variant="primary" type="submit">
+                                        {id ? 'Update Equipment' : 'Add Equipment'}
+                                    </Button>
+                                )}
                             </Form>
                         </FormContainer>
+
                     )}
                     <Modal show={showModal} onHide={handleCloseModal}>
                         <Modal.Header closeButton>
