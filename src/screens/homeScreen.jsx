@@ -3,6 +3,9 @@ import mainimage from './mainimage.png'; // Replace with your actual image path
 import secondImage from './main2_image.png'; // Replace with your actual image path
 import { Container, Row, Col } from 'react-bootstrap';
 import './homeScreen.css';
+import image1 from './image1.png';
+import image2 from './image2.png';
+import image3 from './image3.png';
 
 const HomeScreen = () => {
     return (
@@ -18,8 +21,26 @@ const HomeScreen = () => {
                                 <div className="additional-text">Our advanced mobile app leverages Computer Vision to efficiently capture data from equipment nameplates.</div>
                             </div>
                         </Col>
-                        <Col className="image-wrapper">
-                            <img src={secondImage} alt="Second Image" className="second-image img-fluid" />
+                       
+                    </Row>
+                    <Row>
+                        <Col>
+                              <div className='card'>
+                                <div className='card-image'> <img src={image1} alt="img"/></div>
+                                <div className='card-text'> Automated Data Collection Using Computer Vision</div>
+                              </div>
+                        </Col>
+                        <Col>
+                             <div className='card'>
+                                <div className='card-image'> <img src={image2} alt="img"/></div>
+                                <div className='card-text'> User Review and Input</div>
+                              </div>
+                        </Col>
+                        <Col>
+                             <div className='card'>
+                                <div className='card-image'> <img src={image3} alt="img"/></div>
+                                <div className='card-text'> Tagging and Updating Equipment Information</div>
+                              </div>
                         </Col>
                     </Row>
                 </Container>
