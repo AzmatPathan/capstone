@@ -98,17 +98,19 @@ const EquipmentReviewScreen = () => {
                         <Col>
                             <h2>Equipment Reviews</h2>
                         </Col>
-                        <Col className="d-flex justify-content-end">
-                            <Button variant="primary" onClick={handleToggleSidebar} className="mr-2">
-                                {sidebarOpen ? 'Hide Sidebar' : 'Show Sidebar'}
-                            </Button>
-                            <Button variant="success" onClick={handleNewReview} className="mr-2">
-                                + New
-                            </Button>
-                            <Button variant="outline-secondary" onClick={handleExport}>
-                                Export
-                            </Button>
-                        </Col>
+                      <Col className="d-flex justify-content-end">
+    <div style={{ display: 'flex', gap: '10px' }}>
+        <Button variant="primary" onClick={handleToggleSidebar}>
+            {sidebarOpen ? 'Hide Sidebar' : 'Show Sidebar'}
+        </Button>
+        <Button variant="success" onClick={handleNewReview}>
+            + New
+        </Button>
+        <Button variant="outline-secondary" onClick={handleExport}>
+            Export
+        </Button>
+    </div>
+</Col>
                     </Row>
                     <Row className="mb-3">
                         <Col md={2}>
@@ -205,7 +207,12 @@ const EquipmentReviewScreen = () => {
                                             )}
                                         </td>
                                         <td>{review.reviewed_at ? new Date(review.reviewed_at).toLocaleDateString() : 'N/A'}</td>
-                                        <td>{review.status}</td>
+                                        <td style={{
+                backgroundColor: review.status === 'Approved' ? 'green' :
+                review.status === 'Rejected' ? 'red' : 'white'
+            }}>
+                {review.status}
+            </td>
                                     </tr>
                                 ))}
                             </tbody>

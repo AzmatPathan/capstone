@@ -75,16 +75,22 @@ const EquipmentScreen = () => {
                             <h2>Equipments Information</h2>
                         </Col>
                         <Col className="d-flex justify-content-end">
-                            <Button variant="primary" onClick={handleToggleSidebar} className="mr-2">
-                                {sidebarOpen ? 'Hide Sidebar' : 'Show Sidebar'}
-                            </Button>
-                            <Button variant="success" onClick={handleNewEquipment} className="mr-2">
-                                +NEW
-                            </Button>
-                            <Button variant="outline-secondary" onClick={handleExport}>
-                                EXPORT
-                            </Button>
-                        </Col>
+    <div style={{ marginRight: '10px' }}>
+        <Button variant="primary" onClick={handleToggleSidebar}>
+            {sidebarOpen ? 'Hide Sidebar' : 'Show Sidebar'}
+        </Button>
+    </div>
+    <div style={{ marginRight: '10px' }}>
+        <Button variant="success" onClick={handleNewEquipment}>
+            +NEW
+        </Button>
+    </div>
+    <div>
+        <Button variant="outline-secondary" onClick={handleExport}>
+            EXPORT
+        </Button>
+    </div>
+</Col>
                     </Row>
                     <Row className="mb-3">
                         <Col md={2}>
@@ -144,7 +150,12 @@ const EquipmentScreen = () => {
                                         <td>{new Date(equipment.created_at).toLocaleDateString()}</td>
                                         <td>{equipment.reviewed_by || 'N/A'}</td>
                                         <td>{equipment.reviewed_at ? new Date(equipment.reviewed_at).toLocaleDateString() : 'N/A'}</td>
-                                        <td>{equipment.status}</td>
+                                        <td style={{
+                backgroundColor: equipment.status === 'Approved' ? 'green' :
+                equipment.status === 'Rejected' ? 'red' : 'white'
+            }}>
+                {equipment.status}
+            </td>
                                     </tr>
                                 ))}
                             </tbody>

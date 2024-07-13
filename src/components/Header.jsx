@@ -16,14 +16,14 @@ const Header = () => {
     return (
         <nav className="navbar navbar-expand-lg navbar-light bg-light">
             <div className="container-fluid">
-                <Link to="/" className="navbar-brand">
-                    <img
-                        className="element-telus-logo"
-                        alt="Element telus logo"
-                        src="/images/telus.png"
-                        height="40"
-                    />
-                </Link>
+            <Link to="/dashboard" className="navbar-brand">
+    <img
+        className="element-telus-logo"
+        alt="Element telus logo"
+        src="/images/telus.png"
+        height="40"
+    />
+</Link>
                 <div className="collapse navbar-collapse justify-content-end">
                     <ul className="navbar-nav">
                         {!userInfo ? (
