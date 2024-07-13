@@ -1,6 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'font-awesome/css/font-awesome.min.css';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Col, Container, Form, Row, Table } from 'react-bootstrap';
 import Sidebar from '../../components/sidebar';
 import { useGetUserDataQuery } from '../../slices/userApiSlice';
@@ -14,13 +14,29 @@ const UserScreen = () => {
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
-        userId: '',
+        barcode: '',
+        equipmentId: '',
         username: '',
-        createdAt: '',
-        role: '',
-        email: '',
-        lastLogin: ''
+        startDate: '',
+        endDate: ''
     });
+
+    const [filteredData, setFilteredData] = useState([]);
+
+    useEffect(() => {
+        if (data && data.success) {
+            const filtered = data.filter(user => {
+                const matchesBarcode = user.barcode.toLowerCase().includes(formData.barcode.toLowerCase());
+                const matchesEquipmentId = user.equipment_id.toString().toLowerCase().includes(formData.equipmentId.toLowerCase());
+                const matchesUsername = user.username.toLowerCase().includes(formData.username.toLowerCase());
+                const matchesStartDate = formData.startDate ? new Date(user.created_at) >= new Date(formData.startDate) : true;
+                const matchesEndDate = formData.endDate ? new Date(user.created_at) <= new Date(formData.endDate) : true;
+
+                return matchesBarcode && matchesEquipmentId && matchesUsername && matchesStartDate && matchesEndDate;
+            });
+            setFilteredData(filtered);
+        }
+    }, [data, formData]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -40,7 +56,7 @@ const UserScreen = () => {
 
     const handleExport = async () => {
         try {
-            await csvExport(`${DASHBOARD_URL}/export/user`,'users.csv');
+            await csvExport(`${DASHBOARD_URL}/export/user`, 'users.csv');
         } catch (error) {
             console.error('Error exporting users:', error);
             alert('Failed to export users');
@@ -54,41 +70,27 @@ const UserScreen = () => {
     return (
         <Container fluid>
             <Row>
-                {sidebarOpen && (
-                    <Col md={2} className="d-flex flex-column justify-content-between" style={{ backgroundColor: '#f8f9fa', maxHeight: 'calc(100vh - 56px)', position: 'sticky', top: '56px' }}>
-                        <Sidebar sidebarOpen={sidebarOpen} />
-                    </Col>
-                )}
-                <Col md={{ span: sidebarOpen ? 10 : 12, offset: sidebarOpen ? 2 : 0 }} className="pt-3" style={{ backgroundColor: '#f8f9fa', marginLeft: sidebarOpen ? '16.666%' : 0 }}>
+                <Col xs={12} md={sidebarOpen ? 2 : 0} className="p-0">
+                    {sidebarOpen && <Sidebar sidebarOpen={sidebarOpen} />}
+                </Col>
+                <Col xs={12} md={sidebarOpen ? 10 : 12} className="pt-3" style={{ backgroundColor: '#f8f9fa', marginTop: '56px' }}>
                     <Row className="mb-4">
                         <Col>
-                            <h2>User Information</h2>
+                            <h2>User Management</h2>
                         </Col>
                         <Col className="d-flex justify-content-end">
-                            <Button variant="primary" onClick={handleToggleSidebar} className="mr-2">
-                                {sidebarOpen ? 'Hide Sidebar' : 'Show Sidebar'}
-                            </Button>
-                            <Button variant="success" onClick={handleNewUser} className="mr-2">
-                                New
-                            </Button>
-                            <Button variant="secondary" onClick={handleExport}>
-                                Export
-                            </Button>
-                        </Col>
+    <div style={{ display: 'flex', gap: '10px' }}>
+        <Button variant="primary" onClick={handleToggleSidebar}>
+            {sidebarOpen ? 'Hide Sidebar' : 'Show Sidebar'}
+        </Button>
+        <Button variant="outline-secondary" onClick={handleExport}>
+            Export
+        </Button>
+    </div>
+</Col>            
                     </Row>
                     <Row className="mb-3">
-                        <Col md={3}>
-                            <Form.Group controlId="userId">
-                                <Form.Label>User ID</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    placeholder="Enter User ID"
-                                    name="userId"
-                                    value={formData.userId}
-                                    onChange={handleInputChange}
-                                />
-                            </Form.Group>
-                        </Col>
+                    
                         <Col md={3}>
                             <Form.Group controlId="username">
                                 <Form.Label>Username</Form.Label>
@@ -97,17 +99,6 @@ const UserScreen = () => {
                                     placeholder="Enter Username"
                                     name="username"
                                     value={formData.username}
-                                    onChange={handleInputChange}
-                                />
-                            </Form.Group>
-                        </Col>
-                        <Col md={3}>
-                            <Form.Group controlId="createdAt">
-                                <Form.Label>Created At</Form.Label>
-                                <Form.Control
-                                    type="date"
-                                    name="createdAt"
-                                    value={formData.createdAt}
                                     onChange={handleInputChange}
                                 />
                             </Form.Group>
@@ -165,7 +156,7 @@ const UserScreen = () => {
                             </thead>
                             <tbody>
                                 {data.map((user, index) => (
-                                    <tr key={index} onClick={() => handleRowClick(user.user_id)} style={{ cursor: 'pointer' }}>
+                                    <tr key={index} style={{ cursor: 'pointer' }}>
                                         <td>{user.user_id}</td>
                                         <td>{user.username}</td>
                                         <td>{new Date(user.created_at).toLocaleDateString()}</td>
