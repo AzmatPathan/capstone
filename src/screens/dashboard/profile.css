@@ -1,48 +1,89 @@
-.main-content {
-    flex-grow: 100;
-    padding: 20px;
+body {
+  margin-top: 20px;
+  color: #1a202c;
+  text-align: left;
+  background-color: #e2e8f0;    
 }
 
-.content-container {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start; /* Align items to the top */
-    padding-top: 0px; /* Adjust this value to move content down */
-    padding-left: 100px; /* Adjust this value to move content to the right */
+.main-body {
+  padding: 25px;
+  margin-top: 100 ; /* Increased margin to push the content lower */
 }
 
-.edit-profile-btn {
-    background-color: grey;
-    border-color: grey;
-    color: black;
-    padding: 5px 10px; /* Adjusted size */
-    font-size: 12px; /* Adjusted size */
-    border-radius: 8px;
-    margin-top: 1px;
+.card {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .1), 0 1px 2px 0 rgba(0, 0, 0, .06);
 }
 
-.edit-profile-btn:hover {
-    background-color: darkgrey;
-    border-color: darkgrey;
+.custom-card {
+  min-height: 600px; 
+  display: flex;
+  width: 75%;
+  flex-direction: column;
+  justify-content: center;
+  margin: 0 auto; /* Center the card */
 }
 
-.save-all-btn {
-    background-color: blue;
-    border-color: blue;
-    color: white;
+.profile-picture {
+  margin-top: 0;
+  margin-bottom: 3rem; /* Increased bottom margin to add more space below the profile picture */
+  width: 135px;
+  height: 110px;
 }
 
-.save-all-btn:hover {
-    background-color: darkblue;
-    border-color: darkblue;
+.smaller-btn {
+  padding: 0.4rem 0.6rem; 
+  font-size: 0.9rem; 
 }
 
-.profile-card {
-    max-width: 950px;
-    width: 150%;
-    margin: 0 auto;
+.profile-title {
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 2rem; /* Adjusted margin to bring the title down */
+  margin-bottom: 2rem; /* Reduced margin to bring the title closer to the picture */
 }
 
-h2 {
-    text-align: center;
+.profile-content-box {
+  margin-top:2rem; /* Increased margin to add more space between profile picture and profile content */
+  border: 3px solid #ddd; /* Added border for the outline box */
+  padding: 30px; /* Added padding for better spacing inside the box */
+  border-radius: 20px; /* Optional: added border-radius for rounded corners */
+  background-color: #fff; /* Optional: added background color for the box */
+  min-height: 200px; /* Added minimum height to increase the height of the profile content box */
+  width: 190%; /* Increased the width of the profile content box */
+  max-width: 900px;   
+}
+
+.centered-profile-card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 90vh;
+}
+
+.centered-profile-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 700px;
+}
+
+.field-label {
+  text-align: left;
+  padding-left: 30px;
+  font-size: 1rem;
+}
+
+.field-value {
+  text-align: left;
+  padding-left: 150px;
+  font-size: 1rem;
+}
+
+.sidebar {
+  background-color: #f8f9fa;
+  max-height: calc(100vh - 56px);
+  position: sticky;
+  top: 56px;
 }
