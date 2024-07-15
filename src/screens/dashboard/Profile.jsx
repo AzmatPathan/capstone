@@ -1,162 +1,97 @@
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'font-awesome/css/font-awesome.min.css';
 import React, { useState } from 'react';
-import { Container, Row, Col, Form, Card, Button } from 'react-bootstrap';
-import { FaPencilAlt } from 'react-icons/fa';
+import { useParams, useNavigate } from 'react-router-dom';
+import { Container, Row, Col, Button, Spinner, Card } from 'react-bootstrap';
+import { useGetSingleUserDataQuery } from '../../slices/userApiSlice';
 import Sidebar from '../../components/sidebar';
 import './profile.css';
 
 const Profile = () => {
-    const [isEditing, setIsEditing] = useState(false);
+    const { id } = useParams();
+    const navigate = useNavigate();
+    const { data: user, error, isLoading } = useGetSingleUserDataQuery(id);
+    const [sidebarOpen, setSidebarOpen] = useState(true);
 
-    const handleEditClick = () => {
-        setIsEditing(!isEditing);
+    const handleBackClick = () => {
+        navigate('/dashboard');
+    };
+
+    const handleToggleSidebar = () => {
+        setSidebarOpen(!sidebarOpen);
     };
 
     return (
-        <div className="d-flex">
-            <Sidebar />
-            <div className="main-content">
-                <div className="content-container">
-                    <Container>
-                        <Card className="p-4 shadow profile-card">
-                            <div className="d-flex justify-content-between align-items-center mb-4">
-                                <h2 className="mb-0">User Information</h2>
-                                <Button
-                                    variant="secondary"
-                                    className="edit-profile-btn"
-                                    onClick={handleEditClick}
-                                >
-                                    <FaPencilAlt className="mr-1" />
-                                    {isEditing ? 'Save Profile' : 'Edit Profile'}
-                                </Button>
-                            </div>
-                            <Form>
-                                <Row>
-                                    <Col md={6}>
-                                        <Form.Group controlId="userName">
-                                            <Form.Label>User Name</Form.Label>
-                                            <Form.Control
-                                                type="text"
-                                                placeholder={isEditing ? "Jane" : "Jane"}
-                                                readOnly={!isEditing}
-                                            />
-                                        </Form.Group>
-                                    </Col>
-                                    <Col md={6}>
-                                        <Form.Group controlId="userLastName">
-                                            <Form.Label>User Last Name</Form.Label>
-                                            <Form.Control
-                                                type="text"
-                                                placeholder={isEditing ? "Doe" : "Doe"}
-                                                readOnly={!isEditing}
-                                            />
-                                        </Form.Group>
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col md={6}>
-                                        <Form.Group controlId="userId">
-                                            <Form.Label>User ID</Form.Label>
-                                            <Form.Control
-                                                type="text"
-                                                placeholder={isEditing ? "9987001801" : "9987001801"}
-                                                readOnly={!isEditing}
-                                            />
-                                        </Form.Group>
-                                    </Col>
-                                    <Col md={6}>
-                                        <Form.Group controlId="accountNumber">
-                                            <Form.Label>Account Number</Form.Label>
-                                            <Form.Control
-                                                type="text"
-                                                placeholder={isEditing ? "#AHGA68" : "#AHGA68"}
-                                                readOnly={!isEditing}
-                                            />
-                                        </Form.Group>
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col md={12}>
-                                        <Form.Group controlId="email">
-                                            <Form.Label>Email</Form.Label>
-                                            <Form.Control
-                                                type="email"
-                                                placeholder={isEditing ? "janeDoe@gmail.com" : "janeDoe@gmail.com"}
-                                                readOnly={!isEditing}
-                                            />
-                                        </Form.Group>
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col md={12}>
-                                        <Form.Group controlId="addressLine">
-                                            <Form.Label>Address Line</Form.Label>
-                                            <Form.Control
-                                                type="text"
-                                                placeholder={isEditing ? "123 Main St" : "123 Main St"}
-                                                readOnly={!isEditing}
-                                            />
-                                        </Form.Group>
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col md={4}>
-                                        <Form.Group controlId="city">
-                                            <Form.Label>City</Form.Label>
-                                            <Form.Control
-                                                type="text"
-                                                placeholder={isEditing ? "Toronto" : "Toronto"}
-                                                readOnly={!isEditing}
-                                            />
-                                        </Form.Group>
-                                    </Col>
-                                    <Col md={4}>
-                                        <Form.Group controlId="stateProvince">
-                                            <Form.Label>State/Province</Form.Label>
-                                            <Form.Control
-                                                type="text"
-                                                placeholder={isEditing ? "Ontario" : "Ontario"}
-                                                readOnly={!isEditing}
-                                            />
-                                        </Form.Group>
-                                    </Col>
-                                    <Col md={4}>
-                                        <Form.Group controlId="zipCode">
-                                            <Form.Label>ZIP Code</Form.Label>
-                                            <Form.Control
-                                                type="text"
-                                                placeholder={isEditing ? "M6L 0A2" : "M6L 0A2"}
-                                                readOnly={!isEditing}
-                                            />
-                                        </Form.Group>
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col md={12}>
-                                        <Form.Group controlId="phoneContact">
-                                            <Form.Label>Phone Contact</Form.Label>
-                                            <Form.Control
-                                                type="text"
-                                                placeholder={isEditing ? "+1 (555) 123-4567" : "+1 (555) 123-4567"}
-                                                readOnly={!isEditing}
-                                            />
-                                        </Form.Group>
-                                    </Col>
-                                </Row>
-                                {isEditing && (
-                                    <Button
-                                        variant="primary"
-                                        type="submit"
-                                        className="mt-3 save-all-btn"
-                                    >
-                                        Save All
-                                    </Button>
-                                )}
-                            </Form>
-                        </Card>
-                    </Container>
-                </div>
-            </div>
-        </div>
+        <Container fluid>
+            <Row>
+                {sidebarOpen && (
+                    <Col md={2} className="d-flex flex-column justify-content-between sidebar">
+                        <Sidebar sidebarOpen={sidebarOpen} />
+                    </Col>
+                )}
+                <Col md={{ span: sidebarOpen ? 10 : 12, offset: sidebarOpen ? 2 : 0 }} className="pt-3 main-area">
+                    {isLoading ? (
+                        <div className="text-center my-5">
+                            <Spinner animation="border" variant="primary" />
+                        </div>
+                    ) : (
+                        <div className="main-body">
+                            <Card className="custom-card">
+                                <Card.Body className="text-center">
+                                    <div className="d-flex justify-content-between align-items-center mb-4">
+                                        <h2 className="profile-title m-0">User Profile</h2>
+                                        <div>
+                                            <Button className="smaller-btn ms-2" onClick={handleBackClick}>
+                                                &#8592; Back
+                                            </Button>
+                                            <Button variant="primary" onClick={handleToggleSidebar} className="ms-2 smaller-btn">
+                                                {sidebarOpen ? 'Hide Sidebar' : 'Show Sidebar'}
+                                            </Button>
+                                        </div>
+                                    </div>
+                                    <img
+                                        src="/images/user-icon.jpg"
+                                        alt="Profile"
+                                        className="rounded-circle mb-4 profile-picture"
+                                    />
+                                    <div className="text-left mx-auto profile-content-box" style={{ maxWidth: "400px" }}>
+                                        <div className="profile-content">
+                                            <div className="row mb-3 field-row">
+                                                <div className="col-sm-4 field-label">
+                                                    <h6 className="mb-0">User ID</h6>
+                                                </div>
+                                                <div className="col-sm-8 text-secondary field-value">
+                                                    {user?.id || 'N/A'}
+                                                </div>
+                                            </div>
+                                            <hr />
+                                            <div className="row mb-3 field-row">
+                                                <div className="col-sm-4 field-label">
+                                                    <h6 className="mb-0">Username</h6>
+                                                </div>
+                                                <div className="col-sm-8 text-secondary field-value">
+                                                    {user?.username || 'N/A'}
+                                                </div>
+                                            </div>
+                                            <hr />
+                                            <div className="row mb-3 field-row">
+                                                <div className="col-sm-4 field-label">
+                                                    <h6 className="mb-0">Email</h6>
+                                                </div>
+                                                <div className="col-sm-8 text-secondary field-value">
+                                                    {user?.email || 'N/A'}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {error && <div className="text-danger mt-3">Error fetching user data</div>}
+                                </Card.Body>
+                            </Card>
+                        </div>
+                    )}
+                </Col>
+            </Row>
+        </Container>
     );
 };
 
