@@ -2,6 +2,7 @@ import React from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './Footer.css'; // Make sure to import your custom CSS
 
 const Footer = () => {
   const { userInfo } = useSelector((state) => state.auth);
@@ -12,13 +13,11 @@ const Footer = () => {
         <footer className="element-footer bg-white mt-auto">
           <Container className="py-5">
             <Row className="align-items-center">
-              <Col lg={3} className="mb-4">
-                <div className="row mt-3">
-                  <div className="col-12">
-                    <img className="images img-fluid" alt="Images" src="images/telusImage.png" />
-                  </div>
+              <Col xs={12} md={6} lg={3} className="mb-4">
+                <div className="mt-3">
+                  <img className="images img-fluid" alt="Images" src="images/telusImage.png" />
                 </div>
-                <div className="social-icons d-flex justify-content-start gap-2">
+                <div className="social-icons d-flex justify-content-start gap-2 mt-2">
                   <a href="https://www.facebook.com/TULUSband/" className="icon-link" target="_blank" rel="noopener noreferrer">
                     <i className="fab fa-facebook-f fa-lg text-dark"></i>
                   </a>
@@ -30,7 +29,7 @@ const Footer = () => {
                   </a>
                 </div>
               </Col>
-              <Col lg={3} className="mb-4">
+              <Col xs={12} md={6} lg={3} className="mb-4">
                 <div className="items">
                   <div className="text-wrapper bold-text">COMPANY</div>
                   <div className="div">
@@ -44,7 +43,7 @@ const Footer = () => {
                   </div>
                 </div>
               </Col>
-              <Col lg={3} className="mb-4">
+              <Col xs={12} md={6} lg={3} className="mb-4">
                 <div className="items">
                   <div className="text-wrapper bold-text">HELP</div>
                   <div className="div">
@@ -58,7 +57,7 @@ const Footer = () => {
                   </div>
                 </div>
               </Col>
-              <Col lg={3} className="mb-4">
+              <Col xs={12} md={6} lg={3} className="mb-4">
                 <div className="items">
                   <div className="text-wrapper bold-text">OTHER TELUS PROPERTIES</div>
                   <div className="div">

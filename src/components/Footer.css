@@ -8,13 +8,19 @@
 }
 
 .custom-link:hover {
-  text-decoration: underline; /* Optional: add underline on hover if desired */
+  text-decoration: none; 
+  color: #007bff;
 }
 
 .icon-link {
-  color: #000; /* Adjust the color of the icon */
-  text-decoration: none; /* Remove underline */
+  color: #000;
+  text-decoration: none; 
 }
+
 .icon-link:hover {
-  color: #007bff; /* Change color on hover */
+  color: #007bff; 
+}
+
+.images {
+  max-width: 150px;
 }
