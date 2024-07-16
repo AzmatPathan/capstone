@@ -151,11 +151,27 @@ const EquipmentScreen = () => {
                                         <td>{equipment.reviewed_by || 'N/A'}</td>
                                         <td>{equipment.reviewed_at ? new Date(equipment.reviewed_at).toLocaleDateString() : 'N/A'}</td>
                                         <td style={{
-                backgroundColor: equipment.status === 'Approved' ? 'green' :
-                equipment.status === 'Rejected' ? 'red' : 'white'
-            }}>
-                {equipment.status}
-            </td>
+    backgroundColor: equipment.status === 'Approved' ? '#E8F5E9' : 
+                     equipment.status === 'Rejected' ? '#FFEBEE' : 
+                     equipment.status === 'Pending' ? '#FFF3E0' : 
+                     'white',
+    color: equipment.status === 'Approved' ? '#388E3C' : 
+           equipment.status === 'Rejected' ? '#D32F2F' : 
+           equipment.status === 'Pending' ? '#F57C00' : 
+           'black',
+    padding: '10px',
+    borderRadius: '5px',
+    textAlign: 'center',
+    boxShadow: equipment.status === 'Approved' ? '0 4px 8px rgba(56, 142, 60, 0.3)' : 
+               equipment.status === 'Rejected' ? '0 4px 8px rgba(211, 47, 47, 0.3)' : 
+               equipment.status === 'Pending' ? '0 4px 8px rgba(245, 124, 0, 0.3)' : 
+               '0 4px 8px rgba(0, 0, 0, 0.1)',
+    transition: 'background-color 0.3s ease, transform 0.3s ease'
+}} onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+    onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}>
+    {equipment.status}
+</td>
+
                                     </tr>
                                 ))}
                             </tbody>

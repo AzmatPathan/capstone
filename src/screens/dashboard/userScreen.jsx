@@ -163,7 +163,19 @@ const UserScreen = () => {
                                         <td>{user.role}</td>
                                         <td>{user.email}</td>
                                         <td>{new Date(user.last_login).toLocaleDateString()}</td>
-                                        <td>{user.is_active ? 'Active' : 'Inactive'}</td>
+                                        <td style={{
+    backgroundColor: user.is_active ? '#E8F5E9' : '#FFEBEE',
+    color: user.is_active ? '#388E3C' : '#D32F2F',
+    padding: '10px',
+    borderRadius: '5px',
+    textAlign: 'center',
+    boxShadow: user.is_active ? '0 4px 8px rgba(56, 142, 60, 0.3)' : '0 4px 8px rgba(211, 47, 47, 0.3)',
+    transition: 'background-color 0.3s ease, transform 0.3s ease'
+}} onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+    onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}>
+    {user.is_active ? 'Active' : 'Inactive'}
+</td>
+
                                     </tr>
                                 ))}
                             </tbody>

@@ -208,11 +208,28 @@ const EquipmentReviewScreen = () => {
                                         </td>
                                         <td>{review.reviewed_at ? new Date(review.reviewed_at).toLocaleDateString() : 'N/A'}</td>
                                         <td style={{
-                backgroundColor: review.status === 'Approved' ? 'green' :
-                review.status === 'Rejected' ? 'red' : 'white'
-            }}>
-                {review.status}
-            </td>
+    backgroundColor: review.status === 'Approved' ? '#E8F5E9' : 
+                     review.status === 'Rejected' ? '#FFEBEE' : 
+                     review.status === 'Pending' ? '#FFF3E0' : 
+                     'white',
+    color: review.status === 'Approved' ? '#388E3C' : 
+           review.status === 'Rejected' ? '#D32F2F' : 
+           review.status === 'Pending' ? '#F57C00' : 
+           'black',
+    padding: '10px',
+    borderRadius: '5px',
+    textAlign: 'center',
+    boxShadow: review.status === 'Approved' ? '0 4px 8px rgba(56, 142, 60, 0.3)' : 
+               review.status === 'Rejected' ? '0 4px 8px rgba(211, 47, 47, 0.3)' : 
+               review.status === 'Pending' ? '0 4px 8px rgba(245, 124, 0, 0.3)' : 
+               '0 4px 8px rgba(0, 0, 0, 0.1)',
+    transition: 'background-color 0.3s ease, transform 0.3s ease'
+}} onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+    onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}>
+    {review.status}
+</td>
+
+
                                     </tr>
                                 ))}
                             </tbody>
