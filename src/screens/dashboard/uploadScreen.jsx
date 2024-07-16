@@ -128,7 +128,27 @@ const UploadsScreen = () => {
                                         </td>
 
                                         <td>{new Date(upload.equipment_created_at).toLocaleDateString()}</td>
-                                        <td>{upload.review_status || 'Pending'}</td>
+                                        <td style={{
+    backgroundColor: upload.review_status === 'Approved' ? '#E8F5E9' : 
+                     upload.review_status === 'Rejected' ? '#FFEBEE' : 
+                     upload.review_status === 'Pending' ? '#FFF3E0' : 
+                     'white',
+    color: upload.review_status === 'Approved' ? '#388E3C' : 
+           upload.review_status === 'Rejected' ? '#D32F2F' : 
+           upload.review_status === 'Pending' ? '#F57C00' : 
+           'black',
+    padding: '10px',
+    borderRadius: '5px',
+    textAlign: 'center',
+    boxShadow: upload.review_status === 'Approved' ? '0 4px 8px rgba(56, 142, 60, 0.3)' : 
+               upload.review_status === 'Rejected' ? '0 4px 8px rgba(211, 47, 47, 0.3)' : 
+               upload.review_status === 'Pending' ? '0 4px 8px rgba(245, 124, 0, 0.3)' : 
+               '0 4px 8px rgba(0, 0, 0, 0.1)',
+    transition: 'background-color 0.3s ease, transform 0.3s ease'
+}} onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+    onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}>
+    {upload.review_status || 'Pending'}
+</td>
                                     </tr>
                                 ))}
                             </tbody>
