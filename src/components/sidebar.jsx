@@ -1,14 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Nav } from 'react-bootstrap';
 import { FaHome, FaCog, FaUsers, FaStar, FaUpload } from 'react-icons/fa';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 
 const Sidebar = ({ sidebarOpen }) => {
-    const [activeItem, setActiveItem] = useState('Equipments'); // Default active item
+    const location = useLocation();
+    const [activeItem, setActiveItem] = useState('');
 
-    const handleItemClick = (itemName) => {
-        setActiveItem(itemName);
-    };
+    useEffect(() => {
+        const path = location.pathname;
+        if (path.includes('dashboard')) {
+            setActiveItem('Equipments');
+        } else if (path.includes('reviews')) {
+            setActiveItem('Reviews');
+        } else if (path.includes('uploads')) {
+            setActiveItem('Uploads');
+        } else if (path.includes('user')) {
+            setActiveItem('Users');
+        } else if (path.includes('profile')) {
+            setActiveItem('Profile');
+        }
+    }, [location]);
 
     return (
         <div style={{
@@ -28,7 +40,7 @@ const Sidebar = ({ sidebarOpen }) => {
                     as={NavLink}
                     to="/dashboard"
                     className={activeItem === 'Equipments' ? 'text-primary font-weight-bold' : 'text-dark'}
-                    onClick={() => handleItemClick('Equipments')}
+                    onClick={() => setActiveItem('Equipments')}
                 >
                     <FaHome className="mr-2" /> Equipments
                 </Nav.Link>
@@ -36,7 +48,7 @@ const Sidebar = ({ sidebarOpen }) => {
                     as={NavLink}
                     to="/reviews"
                     className={activeItem === 'Reviews' ? 'text-primary font-weight-bold' : 'text-dark'}
-                    onClick={() => handleItemClick('Reviews')}
+                    onClick={() => setActiveItem('Reviews')}
                 >
                     <FaUsers className="mr-2" /> Reviews
                 </Nav.Link>
@@ -44,7 +56,7 @@ const Sidebar = ({ sidebarOpen }) => {
                     as={NavLink}
                     to="/uploads"
                     className={activeItem === 'Uploads' ? 'text-primary font-weight-bold' : 'text-dark'}
-                    onClick={() => handleItemClick('Uploads')}
+                    onClick={() => setActiveItem('Uploads')}
                 >
                     <FaUpload className="mr-2" /> Uploads
                 </Nav.Link>
@@ -52,7 +64,7 @@ const Sidebar = ({ sidebarOpen }) => {
                     as={NavLink}
                     to="/user"
                     className={activeItem === 'Users' ? 'text-primary font-weight-bold' : 'text-dark'}
-                    onClick={() => handleItemClick('Users')}
+                    onClick={() => setActiveItem('Users')}
                 >
                     <FaCog className="mr-2" /> Users
                 </Nav.Link>
@@ -60,7 +72,7 @@ const Sidebar = ({ sidebarOpen }) => {
                     as={NavLink}
                     to="/profile"
                     className={activeItem === 'Profile' ? 'text-primary font-weight-bold' : 'text-dark'}
-                    onClick={() => handleItemClick('Profile')}
+                    onClick={() => setActiveItem('Profile')}
                 >
                     <FaStar className="mr-2" /> Profile
                 </Nav.Link>
