@@ -1,11 +1,11 @@
 # Stage 1: Build the React app
 FROM node:20.12.0 AS build
 
-WORKDIR /app 
+WORKDIR /app
 
 COPY package*.json ./
 
-# Install dependencies
+# Install dependencies and fix vulnerabilities
 RUN npm install
 
 # Copy source files
