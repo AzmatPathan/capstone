@@ -5,10 +5,16 @@ WORKDIR /app
 
 COPY package*.json ./
 
+# Install dependencies
 RUN npm install
 
+# Fix vulnerabilities
+RUN npm audit fix
+
+# Copy source files
 COPY . .
 
+# Build the React app
 RUN npm run build
 
 # Stage 2: Serve the app with Nginx
