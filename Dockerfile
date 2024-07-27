@@ -4,7 +4,7 @@ FROM node:14
 # Create and set the working directory
 WORKDIR /app
 
-# Create and set permissions for .npm directory in the node user's home directory
+# Switch to root to create and set permissions for .npm directory
 USER root
 RUN mkdir -p /home/node/.npm && chown -R node:node /home/node/.npm
 
