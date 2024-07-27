@@ -5,8 +5,8 @@ WORKDIR /app
 
 COPY package*.json ./
 
-# Install dependencies and fix vulnerabilities
-RUN npm install
+# Install dependencies
+RUN npm ci
 
 # Copy source files
 COPY . .
