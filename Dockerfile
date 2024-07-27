@@ -3,10 +3,11 @@ FROM node:20.12.0 AS build
 
 WORKDIR /app
 
+# Copy package.json and package-lock.json
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci
+# Clean npm cache and install dependencies
+RUN npm cache clean && npm ci
 
 # Copy source files
 COPY . .
