@@ -12,45 +12,45 @@ pipeline {
 
     stages {
         stage('Checkout') {
-      steps {
-        checkout scm
-      }
+            steps {
+                checkout scm
+            }
         }
 
         stage('Build Docker Image') {
-      steps {
-        script {
-          dockerImage = docker.build("${ARTIFACT_REGISTRY}/${PROJECT_ID}/${IMAGE_NAME}:${env.BUILD_ID}")
-        }
-      }
+            steps {
+                script {
+                    dockerImage = docker.build("${ARTIFACT_REGISTRY}/${PROJECT_ID}/${IMAGE_NAME}:${env.BUILD_ID}")
+                }
+            }
         }
 
         stage('Run Unit Tests') {
-      steps {
-        script {
-          dockerImage.inside {
-            sh 'npm install'
-            sh 'npm test'
-          }
-        }
-      }
+            steps {
+                script {
+                    dockerImage.inside {
+                        sh 'npm install'
+                        sh 'npm test'
+                    }
+                }
+            }
         }
 
         stage('Push Docker Image') {
-      steps {
-        script {
-          docker.withRegistry('https://gcr.io', 'gcr-docker-credentials') {
-            dockerImage.push("${env.BUILD_ID}")  // Push with build ID tag
-            dockerImage.push('latest')  // Push with 'latest' tag
-          }
-        }
-      }
+            steps {
+                script {
+                    docker.withRegistry('https://gcr.io', 'gcr-docker-credentials') {
+                        dockerImage.push("${env.BUILD_ID}")  // Push with build ID tag
+                        dockerImage.push('latest')  // Push with 'latest' tag
+                    }
+                }
+            }
         }
 
         stage('Deploy to Cloud Run') {
-      steps {
-        script {
-          sh """
+            steps {
+                script {
+                    sh """
                     gcloud config set project ${PROJECT_ID}
                     gcloud auth activate-service-account --key-file=${GOOGLE_APPLICATION_CREDENTIALS}
                     gcloud run deploy ${CLOUD_RUN_SERVICE} \
@@ -59,17 +59,17 @@ pipeline {
                         --platform managed \
                         --allow-unauthenticated
                     """
-        }
-      }
+                }
+            }
         }
     }
 
     post {
         success {
-      echo 'Frontend successfully deployed!'
+            echo 'Frontend successfully deployed!'
         }
         failure {
-      echo 'Frontend deployment failed.'
+            echo 'Frontend deployment failed.'
         }
     }
 }
