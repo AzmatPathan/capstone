@@ -1,30 +1,29 @@
-# Use a specific Node.js version as the base image
+# Use official Node.js image as a base
 FROM node:14
 
-# Create and set the working directory
-WORKDIR /app
-
-# Switch to root to create and set permissions for .npm directory
+# Switch to root to set up permissions
 USER root
+
+# Create the .npm directory and set permissions
 RUN mkdir -p /home/node/.npm && chown -R node:node /home/node/.npm
 
-# Switch to the node user
+# Switch to non-root user
 USER node
 
-# Copy package.json and package-lock.json (if present)
+# Set working directory
+WORKDIR /app
+
+# Copy package.json and package-lock.json
 COPY --chown=node:node package*.json ./
 
 # Install dependencies
 RUN npm install
 
-# Copy the rest of the application code
+# Copy application files
 COPY --chown=node:node . .
 
-# Build the application
-RUN npm run build
+# Expose the application port
+EXPOSE 3000
 
-# Expose the port that the application will run on
-EXPOSE 8080
-
-# Specify the command to run the application
+# Start the application
 CMD ["npm", "start"]

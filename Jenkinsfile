@@ -14,7 +14,7 @@ pipeline {
         stage('Build') {
       steps {
         script {
-          // Ensure correct permissions for .npm directory
+          // Ensure correct permissions for .npm directory (if needed)
           sh 'mkdir -p /home/node/.npm'
           sh 'chown -R node:node /home/node/.npm'
 
