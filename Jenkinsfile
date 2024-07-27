@@ -1,13 +1,17 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'node:18' // Use an official Node.js Docker image
+            args '-v /var/jenkins_home/.npm:/root/.npm' // Optional: cache npm modules
+        }
+    }
     environment {
         PROJECT_ID = 'capstone-430018'
         IMAGE_NAME = 'frontend'
         REGION = 'us-central1'
         ARTIFACT_REGISTRY = 'frontend-artifact-repo'
         CLOUD_RUN_SERVICE = 'frontend-service'
-        GCP_CREDENTIALS = 'gcr-credentials-file'
-        VERSION = "${env.BUILD_ID}" // Use Jenkins build ID as version or set a different versioning strategy
+        GCP_CREDENTIALS = 'gcr-credentials-file' // Google Cloud credentials file
     }
 
     stages {
@@ -17,19 +21,10 @@ pipeline {
             }
         }
 
-        stage('Create Artifact Registry Repository') {
+        stage('Install Dependencies') {
             steps {
                 script {
-                    withCredentials([file(credentialsId: "${GCP_CREDENTIALS}", variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
-                        sh '''
-                            gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
-                            gcloud config set project $PROJECT_ID
-                            gcloud artifacts repositories describe $ARTIFACT_REGISTRY --location=$REGION || \
-                            gcloud artifacts repositories create $ARTIFACT_REGISTRY \
-                                --repository-format=docker \
-                                --location=$REGION
-                        '''
-                    }
+                    sh 'npm install'
                 }
             }
         }
@@ -37,7 +32,6 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    sh 'npm install'
                     sh 'npm run build'
                 }
             }
@@ -47,7 +41,7 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        docker build -t gcr.io/$PROJECT_ID/$IMAGE_NAME:$VERSION .
+                        docker build -t gcr.io/$PROJECT_ID/$IMAGE_NAME:latest .
                     '''
                 }
             }
@@ -60,8 +54,8 @@ pipeline {
                         sh '''
                             gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
                             gcloud auth configure-docker
-                            docker tag gcr.io/$PROJECT_ID/$IMAGE_NAME:$VERSION $REGION-docker.pkg.dev/$PROJECT_ID/$ARTIFACT_REGISTRY/$IMAGE_NAME:$VERSION
-                            docker push $REGION-docker.pkg.dev/$PROJECT_ID/$ARTIFACT_REGISTRY/$IMAGE_NAME:$VERSION
+                            docker tag gcr.io/$PROJECT_ID/$IMAGE_NAME:latest $REGION-docker.pkg.dev/$PROJECT_ID/$ARTIFACT_REGISTRY/$IMAGE_NAME:latest
+                            docker push $REGION-docker.pkg.dev/$PROJECT_ID/$ARTIFACT_REGISTRY/$IMAGE_NAME:latest
                         '''
                     }
                 }
@@ -71,9 +65,16 @@ pipeline {
         stage('Deploy to Cloud Run') {
             steps {
                 script {
-                    sh '''
-                        gcloud run deploy $CLOUD_RUN_SERVICE --image=$REGION-docker.pkg.dev/$PROJECT_ID/$ARTIFACT_REGISTRY/$IMAGE_NAME:$VERSION --platform=managed --region=$REGION --allow-unauthenticated
-                    '''
+                    withCredentials([file(credentialsId: "${GCP_CREDENTIALS}", variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
+                        sh '''
+                            gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
+                            gcloud run deploy $CLOUD_RUN_SERVICE \
+                                --image=$REGION-docker.pkg.dev/$PROJECT_ID/$ARTIFACT_REGISTRY/$IMAGE_NAME:latest \
+                                --platform=managed \
+                                --region=$REGION \
+                                --allow-unauthenticated
+                        '''
+                    }
                 }
             }
         }
