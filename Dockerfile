@@ -1,27 +1,30 @@
-# Stage 1: Build the application
-FROM node:18 AS build
+# Use a specific Node.js version as the base image
+FROM node:14
 
-# Set the working directory
+# Create and set the working directory
 WORKDIR /app
 
+# Create .npm directory and adjust permissions in the node user's home directory
+USER root
+RUN mkdir -p /home/node/.npm && chown -R node:node /home/node/.npm
+
+# Switch to the node user
+USER node
+
+# Copy package.json and package-lock.json (if present)
+COPY --chown=node:node package*.json ./
+
 # Install dependencies
-COPY package.json package-lock.json ./
 RUN npm install
 
-# Copy the source code
-COPY . .
+# Copy the rest of the application code
+COPY --chown=node:node . .
 
 # Build the application
 RUN npm run build
 
-# Stage 2: Serve the application
-FROM nginx:alpine
+# Expose the port that the application will run on
+EXPOSE 8080
 
-# Copy the built files from the previous stage
-COPY --from=build /app/build /usr/share/nginx/html
-
-# Expose port 80
-EXPOSE 80
-
-# Start Nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Specify the command to run the application
+CMD ["npm", "start"]
