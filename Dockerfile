@@ -1,29 +1,22 @@
-# Use official Node.js image as a base
-FROM node:14
+# Stage 1: Build the React app
+FROM node:14 AS build
 
-# Switch to root to set up permissions
-USER root
-
-# Create the .npm directory and set permissions
-RUN mkdir -p /home/node/.npm && chown -R node:node /home/node/.npm
-
-# Switch to non-root user
-USER node
-
-# Set working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json
-COPY --chown=node:node package*.json ./
+COPY package*.json ./
 
-# Install dependencies
 RUN npm install
 
-# Copy application files
-COPY --chown=node:node . .
+COPY . .
 
-# Expose the application port
-EXPOSE 3000
+RUN npm run build
 
-# Start the application
-CMD ["npm", "start"]
+# Stage 2: Serve the app with Nginx
+FROM nginx:alpine
+
+COPY --from=build /app/build /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/nginx.conf
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
