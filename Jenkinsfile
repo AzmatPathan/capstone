@@ -40,7 +40,7 @@ pipeline {
             steps {
                 script {
                     sh '''
-                    gcloud run deploy $CLOUD_RUN_SERVICE --image $IMAGE_NAME --platform managed --region $REGION --allow-unauthenticated
+                    gcloud run deploy $CLOUD_RUN_SERVICE --image $IMAGE_NAME --platform managed --region $REGION --port 80 --allow-unauthenticated
                     '''
                 }
             }
