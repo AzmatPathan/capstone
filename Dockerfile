@@ -9,8 +9,8 @@ RUN npm install -g npm@latest
 # Copy package.json and package-lock.json
 COPY package*.json ./
 
-# Clean npm cache and install dependencies
-RUN npm cache clean --force && npm ci
+# Install dependencies
+RUN npm cache clean --force && npm install
 
 # Copy source files
 COPY . .
