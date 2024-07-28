@@ -11,6 +11,21 @@ pipeline {
     }
 
     stages {
+        stage('Authenticate with GCP') {
+            steps {
+                script {
+                    // Authenticate with Google Cloud
+                    withCredentials([file(credentialsId: "${GOOGLE_APPLICATION_CREDENTIALS}", variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
+                        sh '''
+                        gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
+                        gcloud config set project $PROJECT_ID
+                        gcloud config set run/region $REGION
+                        '''
+                    }
+                }
+            }
+        }
+
         stage('Pull Docker Image') {
             steps {
                 script {
@@ -25,9 +40,6 @@ pipeline {
             steps {
                 script {
                     sh '''
-                    gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
-                    gcloud config set project $PROJECT_ID
-                    gcloud config set run/region $REGION
                     gcloud run deploy $CLOUD_RUN_SERVICE --image $IMAGE_NAME --platform managed --region $REGION
                     '''
                 }
