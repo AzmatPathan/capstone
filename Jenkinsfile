@@ -8,6 +8,7 @@ pipeline {
         IMAGE_NAME = 'azmatpathan/capstone_frontend'
         CLOUD_RUN_SERVICE = 'frontend-service'
         DOCKER_HUB_CREDENTIALS = 'dockerhub-creds'  // Docker Hub credentials ID
+        VPC_CONNECTOR = 'cloudrun-connector'  // VPC Connector name
     }
 
     stages {
@@ -40,7 +41,13 @@ pipeline {
             steps {
                 script {
                     sh '''
-                    gcloud run deploy $CLOUD_RUN_SERVICE --image $IMAGE_NAME --platform managed --region $REGION --port 80 --allow-unauthenticated
+                    gcloud run deploy $CLOUD_RUN_SERVICE \
+                        --image $IMAGE_NAME \
+                        --platform managed \
+                        --region $REGION \
+                        --port 80 \
+                        --allow-unauthenticated \
+                        --vpc-connector $VPC_CONNECTOR
                     '''
                 }
             }
