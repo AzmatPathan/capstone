@@ -5,43 +5,17 @@ pipeline {
         GOOGLE_APPLICATION_CREDENTIALS = 'gcr-credentials-file'  // GCP service account credentials
         PROJECT_ID = 'capstone-430018'
         REGION = 'us-central1'
-        IMAGE_NAME = 'frontend'
-        ARTIFACT_REGISTRY = 'frontend-artifact-repo'
+        IMAGE_NAME = 'azmatpathan/capstone_frontend'
         CLOUD_RUN_SERVICE = 'frontend-service'
+        DOCKER_HUB_CREDENTIALS = 'dockerhub-creds'  // Docker Hub credentials ID
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
-
-        stage('Build Docker Image') {
+        stage('Pull Docker Image') {
             steps {
                 script {
-                    dockerImage = docker.build("${ARTIFACT_REGISTRY}/${PROJECT_ID}/${IMAGE_NAME}:${env.BUILD_ID}")
-                }
-            }
-        }
-
-        stage('Run Unit Tests') {
-            steps {
-                script {
-                    dockerImage.inside {
-                        sh 'npm install --legacy-peer-deps'
-                        sh 'npm test'
-                    }
-                }
-            }
-        }
-
-        stage('Push Docker Image') {
-            steps {
-                script {
-                    docker.withRegistry('https://gcr.io', 'gcr-docker-credentials') {
-                        dockerImage.push("${env.BUILD_ID}")  // Push with build ID tag
-                        dockerImage.push('latest')  // Push with 'latest' tag
+                    docker.withRegistry('https://index.docker.io/v1/', "${DOCKER_HUB_CREDENTIALS}") {
+                        docker.image("${IMAGE_NAME}").pull()
                     }
                 }
             }
@@ -50,26 +24,14 @@ pipeline {
         stage('Deploy to Cloud Run') {
             steps {
                 script {
-                    sh """
-                    gcloud config set project ${PROJECT_ID}
-                    gcloud auth activate-service-account --key-file=${GOOGLE_APPLICATION_CREDENTIALS}
-                    gcloud run deploy ${CLOUD_RUN_SERVICE} \
-                        --image ${ARTIFACT_REGISTRY}/${PROJECT_ID}/${IMAGE_NAME}:latest \
-                        --region ${REGION} \
-                        --platform managed \
-                        --allow-unauthenticated
-                    """
+                    sh '''
+                    gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
+                    gcloud config set project $PROJECT_ID
+                    gcloud config set run/region $REGION
+                    gcloud run deploy $CLOUD_RUN_SERVICE --image $IMAGE_NAME --platform managed --region $REGION
+                    '''
                 }
             }
-        }
-    }
-
-    post {
-        success {
-            echo 'Frontend successfully deployed!'
-        }
-        failure {
-            echo 'Frontend deployment failed.'
         }
     }
 }
