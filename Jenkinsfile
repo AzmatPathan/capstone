@@ -6,7 +6,7 @@ pipeline {
         PROJECT_ID = 'capstone-430018'
         REGION = 'us-central1'
         IMAGE_NAME = 'frontend'
-        ARTIFACT_REGISTRY = 'fronten-artifact-repo'
+        ARTIFACT_REGISTRY = 'frontend-artifact-repo'
         CLOUD_RUN_SERVICE = 'frontend-service'
     }
 
@@ -29,7 +29,7 @@ pipeline {
             steps {
                 script {
                     dockerImage.inside {
-                        sh 'npm install'
+                        sh 'npm install --legacy-peer-deps'
                         sh 'npm test'
                     }
                 }
