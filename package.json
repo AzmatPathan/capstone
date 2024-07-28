@@ -4,6 +4,7 @@
   "private": true,
   "proxy": "http://localhost:5000",
   "dependencies": {
+    "@jridgewell/sourcemap-codec": "^1.5.0",
     "@reduxjs/toolkit": "^2.2.7",
     "@testing-library/jest-dom": "^6.4.8",
     "@testing-library/react": "^16.0.0",
@@ -47,8 +48,18 @@
   },
   "devDependencies": {
     "@babel/core": "^7.24.9",
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@babel/plugin-transform-class-properties": "^7.24.7",
+    "@babel/plugin-transform-nullish-coalescing-operator": "^7.24.7",
+    "@babel/plugin-transform-numeric-separator": "^7.24.7",
+    "@babel/plugin-transform-optional-chaining": "^7.24.8",
+    "@babel/plugin-transform-private-methods": "^7.24.7",
+    "@babel/plugin-transform-private-property-in-object": "^7.24.7",
     "@babel/preset-env": "^7.25.0",
     "@babel/preset-react": "^7.24.7",
+    "@eslint/config-array": "^0.17.1",
+    "@eslint/object-schema": "^2.1.4",
+    "@rollup/plugin-terser": "^0.4.4",
     "eslint-config-react-app": "^7.0.1",
     "gensync": "^1.0.0-beta.2"
   }

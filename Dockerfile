@@ -7,7 +7,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Clean npm cache and install dependencies
-RUN npm cache clean && npm ci
+RUN npm cache clean --force && npm ci
 
 # Copy source files
 COPY . .
