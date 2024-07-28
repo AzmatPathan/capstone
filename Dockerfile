@@ -1,6 +1,5 @@
 # Stage 1: Build the React app
-FROM node:16.20.1 AS build  
-# Use a stable Node.js LTS version
+FROM node:20.12.0 AS build
 
 WORKDIR /app
 
@@ -8,7 +7,8 @@ WORKDIR /app
 COPY package*.json ./
 
 # Clean npm cache and install dependencies
-RUN npm cache clean --force && npm ci --legacy-peer-deps
+RUN npm install -g npm@latest
+RUN npm cache clean --force && npm ci
 
 # Copy source files
 COPY . .
