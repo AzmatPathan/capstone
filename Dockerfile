@@ -3,11 +3,14 @@ FROM node:16 AS build
 
 WORKDIR /app
 
+# Install the latest version of npm
+RUN npm install -g npm@latest
+
 # Copy package.json and package-lock.json
 COPY package*.json ./
 
-#  install dependencies
-RUN npm install
+# Clean npm cache and install dependencies
+RUN npm cache clean --force && npm ci
 
 # Copy source files
 COPY . .
