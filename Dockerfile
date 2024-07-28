@@ -1,5 +1,5 @@
 # Stage 1: Build the React app
-FROM node:20.12.0 AS build
+FROM node:16 AS build
 
 WORKDIR /app
 
@@ -7,8 +7,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Clean npm cache and install dependencies
-RUN npm install -g npm@latest
-RUN npm cache clean --force && npm ci
+RUN npm install -g 
 
 # Copy source files
 COPY . .
