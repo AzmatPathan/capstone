@@ -25,6 +25,7 @@ import LoginScreen from './screens/loginScreen';
 import RegisterScreen from './screens/registerScreen';
 import store from './store';
 import UploadsScreen from './screens/dashboard/uploadScreen';
+import HealthCheck from './HealthCheck'; // Import the HealthCheck component
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -45,9 +46,11 @@ const router = createBrowserRouter(
         <Route path="/profile" element={<Profile />} />
         <Route path="/user" element={<UserScreen />} />
       </Route>
+      <Route path='/health' element={<HealthCheck />} /> {/* Add the health check route */}
     </Route>
   )
 );
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>

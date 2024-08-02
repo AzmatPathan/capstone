@@ -9,6 +9,12 @@ pipeline {
         CLOUD_RUN_SERVICE = 'frontend-service'
         DOCKER_HUB_CREDENTIALS = 'dockerhub-creds'  // Docker Hub credentials ID
         VPC_CONNECTOR = 'cloudrun-connector'  // VPC Connector name
+
+        // Define environment variables for backend, MySQL, and RabbitMQ services
+        BACKEND_SERVICE_NAME = 'backend-service'
+        MYSQL_SERVICE_NAME = 'mysql'
+        RABBITMQ_SERVICE_NAME = 'rabbitmq'
+        NAMESPACE = 'my-namespace'
     }
 
     stages {
@@ -37,6 +43,22 @@ pipeline {
             }
         }
 
+        stage('Get Service IPs') {
+            steps {
+                script {
+                    // Get the internal IP addresses of the services
+                    def backendIP = sh(script: "kubectl get svc ${BACKEND_SERVICE_NAME} --namespace=${NAMESPACE} -o jsonpath='{.spec.clusterIP}'", returnStdout: true).trim()
+                    def mysqlIP = sh(script: "kubectl get svc ${MYSQL_SERVICE_NAME} --namespace=${NAMESPACE} -o jsonpath='{.spec.clusterIP}'", returnStdout: true).trim()
+                    def rabbitmqIP = sh(script: "kubectl get svc ${RABBITMQ_SERVICE_NAME} --namespace=${NAMESPACE} -o jsonpath='{.spec.clusterIP}'", returnStdout: true).trim()
+
+                    // Export environment variables
+                    env.BACKEND_URL = "http://${backendIP}:80"
+                    env.MYSQL_CONNECTION_STRING = "mysql://${mysqlIP}:3306"
+                    env.RABBITMQ_URL = "amqp://${rabbitmqIP}:5672"
+                }
+            }
+        }
+
         stage('Deploy to Cloud Run') {
             steps {
                 script {
@@ -47,7 +69,8 @@ pipeline {
                         --region $REGION \
                         --port 80 \
                         --allow-unauthenticated \
-                        --vpc-connector $VPC_CONNECTOR
+                        --vpc-connector $VPC_CONNECTOR \
+                        --set-env-vars BACKEND_URL=$BACKEND_URL,MYSQL_CONNECTION_STRING=$MYSQL_CONNECTION_STRING,RABBITMQ_URL=$RABBITMQ_URL
                     '''
                 }
             }
