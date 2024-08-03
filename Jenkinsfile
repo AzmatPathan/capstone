@@ -15,6 +15,9 @@ pipeline {
         MYSQL_SERVICE_NAME = 'mysql'
         RABBITMQ_SERVICE_NAME = 'rabbitmq'
         NAMESPACE = 'my-namespace'
+
+        // Define custom domain
+        CUSTOM_DOMAIN = 'telusitms.com'
     }
 
     stages {
@@ -73,6 +76,19 @@ pipeline {
                         --allow-unauthenticated \
                         --vpc-connector $VPC_CONNECTOR \
                         --set-env-vars BACKEND_URL=$BACKEND_URL,MYSQL_CONNECTION_STRING=$MYSQL_CONNECTION_STRING,RABBITMQ_URL=$RABBITMQ_URL
+                    '''
+                }
+            }
+        }
+
+        stage('Add Custom Domain') {
+            steps {
+                script {
+                    sh '''
+                    gcloud run domain-mappings create \
+                        --service $CLOUD_RUN_SERVICE \
+                        --domain $CUSTOM_DOMAIN \
+                        --platform managed
                     '''
                 }
             }
