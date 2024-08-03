@@ -68,7 +68,7 @@ pipeline {
             steps {
                 script {
                     sh '''
-                    gcloud run deploy $CLOUD_RUN_SERVICE \
+                    gcloud beta run deploy $CLOUD_RUN_SERVICE \
                         --image $IMAGE_NAME \
                         --platform managed \
                         --region $REGION \
@@ -85,7 +85,7 @@ pipeline {
             steps {
                 script {
                     sh '''
-                    gcloud run domain-mappings create \
+                    gcloud beta run domain-mappings create \
                         --service $CLOUD_RUN_SERVICE \
                         --domain $CUSTOM_DOMAIN \
                         --platform managed
