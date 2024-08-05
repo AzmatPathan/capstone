@@ -81,17 +81,17 @@ pipeline {
             }
         }
 
-        stage('Add Custom Domain') {
-            steps {
-                script {
-                    sh '''
-                    gcloud beta run domain-mappings create \
-                        --service $CLOUD_RUN_SERVICE \
-                        --domain $CUSTOM_DOMAIN \
-                        --platform managed
-                    '''
-                }
-            }
-        }
+        // stage('Add Custom Domain') {
+        //     steps {
+        //         script {
+        //             sh '''
+        //             gcloud beta run domain-mappings create \
+        //                 --service $CLOUD_RUN_SERVICE \
+        //                 --domain $CUSTOM_DOMAIN \
+        //                 --platform managed
+        //             '''
+        //         }
+        //     }
+        // }
     }
 }
