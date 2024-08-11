@@ -45,7 +45,7 @@ const EquipmentDetailScreen = () => {
                     manufacturer: imageData.manufacturer || '',
                     serial_number: imageData.serial_number || '',
                     model_number: imageData.model_number || '', // Update model_number from formData
-                    additional_details: description || ''
+                    additional_details: `${description}  \n\n ${imageData.data})` || ''
                 }));
             }
         }
