@@ -5,17 +5,10 @@ pipeline {
         DOCKERHUB_USERNAME = 'azmatpathan'
         GCP_CREDENTIALS = 'gcp-credentials'
         GCP_PROJECT_ID = 'my-first-project-431720'
-        CLOUD_RUN_SERVICE_NAME = 'backend-service'  // Cloud Run Service Name
+        CLOUD_RUN_SERVICE_NAME = 'frontend-service'  // Cloud Run Service Name
         CLOUD_RUN_REGION = 'us-central1'
-        BACKEND_IMAGE = "${DOCKERHUB_USERNAME}/backend"
+        BACKEND_IMAGE = "${DOCKERHUB_USERNAME}/frontend"
         GIT_COMMIT = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
-
-        // Database and RabbitMQ Environment Variables
-        CLOUD_SQL_CONNECTION_NAME = 'my-first-project-431720:us-central1:my-cloud-sql-instance'
-        DB_USER = 'my-db-user'
-        DB_PASSWORD = 'my-db-password'
-        DB_NAME = 'my-database'
-        RABBITMQ_URL = 'amqp://user:password@rabbitmq-service:5672'
     }
     stages {
         stage('Checkout') {
@@ -55,7 +48,6 @@ pipeline {
                         --platform managed \
                         --region $CLOUD_RUN_REGION \
                         --allow-unauthenticated \
-                        --set-env-vars CLOUD_SQL_CONNECTION_NAME=$CLOUD_SQL_CONNECTION_NAME,DB_USER=$DB_USER,DB_PASSWORD=$DB_PASSWORD,DB_NAME=$DB_NAME,RABBITMQ_URL=$RABBITMQ_URL
                     '''
                 }
             }
