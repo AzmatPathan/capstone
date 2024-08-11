@@ -42,7 +42,9 @@ const EquipmentDetailScreen = () => {
             if (imageData) {
                 setFormData(prevFormData => ({
                     ...prevFormData,
-                    model_number: imageData.modelNumber || '', // Update model_number from formData
+                    manufacturer: imageData.manufacturer || '',
+                    serial_number: imageData.serial_number || '',
+                    model_number: imageData.model_number || '', // Update model_number from formData
                     additional_details: description || ''
                 }));
             }
