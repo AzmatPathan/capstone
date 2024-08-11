@@ -7,8 +7,7 @@ pipeline {
         GCP_PROJECT_ID = 'my-first-project-431720'
         CLOUD_RUN_SERVICE_NAME = 'frontend-service'  // Cloud Run Service Name
         CLOUD_RUN_REGION = 'us-central1'
-        BACKEND_IMAGE = "${DOCKERHUB_USERNAME}/frontend"
-        GIT_COMMIT = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
+        FRONTEND_IMAGE = "${DOCKERHUB_USERNAME}/frontend"
     }
     stages {
         stage('Checkout') {
@@ -27,27 +26,16 @@ pipeline {
                 }
             }
         }
-        stage('Build and Push Docker Images') {
-            steps {
-                script {
-                    withCredentials([usernamePassword(credentialsId: "${DOCKER_HUB_CREDENTIALS}", usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                        // Build and push the backend Docker image to Docker Hub
-                        sh "docker build --no-cache -t ${BACKEND_IMAGE}:${GIT_COMMIT} -f docker/backend/Dockerfile ."
-                        sh "echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin"
-                        sh "docker push ${BACKEND_IMAGE}:${GIT_COMMIT}"
-                    }
-                }
-            }
-        }
         stage('Deploy to Cloud Run') {
             steps {
                 script {
+                    // Deploy to Cloud Run using the image from Docker Hub
                     sh '''
                     gcloud run deploy $CLOUD_RUN_SERVICE_NAME \
-                        --image gcr.io/$GCP_PROJECT_ID/$BACKEND_IMAGE:$GIT_COMMIT \
+                        --image ${FRONTEND_IMAGE}:latest \
                         --platform managed \
                         --region $CLOUD_RUN_REGION \
-                        --allow-unauthenticated \
+                        --allow-unauthenticated
                     '''
                 }
             }
