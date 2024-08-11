@@ -36,6 +36,7 @@ pipeline {
                         --platform managed \
                         --region $CLOUD_RUN_REGION \
                         --allow-unauthenticated
+                        --port 80
                     '''
                 }
             }
