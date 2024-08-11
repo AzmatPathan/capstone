@@ -1,97 +1,80 @@
 pipeline {
     agent any
-
     environment {
-        GOOGLE_APPLICATION_CREDENTIALS = 'gcr-credentials-file'  // GCP service account credentials
-        PROJECT_ID = 'capstone-430018'
-        REGION = 'us-central1'
-        IMAGE_NAME = 'azmatpathan/capstone_frontend'
-        CLOUD_RUN_SERVICE = 'frontend-service'
-        DOCKER_HUB_CREDENTIALS = 'dockerhub-creds'  // Docker Hub credentials ID
-        VPC_CONNECTOR = 'cloudrun-connector'  // VPC Connector name
+        DOCKER_HUB_CREDENTIALS = 'dockerhub-creds'  // Docker Hub credentials ID in Jenkins
+        DOCKERHUB_USERNAME = 'azmatpathan'
+        GCP_CREDENTIALS = 'gcp-credentials'
+        GCP_PROJECT_ID = 'my-first-project-431720'
+        CLOUD_RUN_SERVICE_NAME = 'backend-service'  // Cloud Run Service Name
+        CLOUD_RUN_REGION = 'us-central1'
+        BACKEND_IMAGE = "${DOCKERHUB_USERNAME}/backend"
+        GIT_COMMIT = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
 
-        // Define environment variables for backend, MySQL, and RabbitMQ services
-        BACKEND_SERVICE_NAME = 'backend-service'
-        MYSQL_SERVICE_NAME = 'mysql'
-        RABBITMQ_SERVICE_NAME = 'rabbitmq'
-        NAMESPACE = 'my-namespace'
-
-        // Define custom domain
-        CUSTOM_DOMAIN = 'telusitms.com'
+        // Database and RabbitMQ Environment Variables
+        CLOUD_SQL_CONNECTION_NAME = 'my-first-project-431720:us-central1:my-cloud-sql-instance'
+        DB_USER = 'my-db-user'
+        DB_PASSWORD = 'my-db-password'
+        DB_NAME = 'my-database'
+        RABBITMQ_URL = 'amqp://user:password@rabbitmq-service:5672'
     }
-
     stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
         stage('Authenticate with GCP') {
             steps {
                 script {
-                    // Authenticate with Google Cloud
-                    withCredentials([file(credentialsId: "${GOOGLE_APPLICATION_CREDENTIALS}", variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
-                        sh '''
-                        gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
-                        gcloud config set project $PROJECT_ID
-                        gcloud config set run/region $REGION
-                        '''
+                    withCredentials([file(credentialsId: "${GCP_CREDENTIALS}", variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
+                        sh 'gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS'
+                        sh "gcloud config set project ${GCP_PROJECT_ID}"
+                        sh "gcloud config set run/region ${CLOUD_RUN_REGION}"
                     }
                 }
             }
         }
-
-        stage('Pull Docker Image') {
+        stage('Build and Push Docker Images') {
             steps {
                 script {
-                    docker.withRegistry('https://index.docker.io/v1/', "${DOCKER_HUB_CREDENTIALS}") {
-                        docker.image("${IMAGE_NAME}").pull()
+                    withCredentials([usernamePassword(credentialsId: "${DOCKER_HUB_CREDENTIALS}", usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                        // Build and push the backend Docker image to Docker Hub
+                        sh "docker build --no-cache -t ${BACKEND_IMAGE}:${GIT_COMMIT} -f docker/backend/Dockerfile ."
+                        sh "echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin"
+                        sh "docker push ${BACKEND_IMAGE}:${GIT_COMMIT}"
                     }
                 }
             }
         }
-
-        stage('Get Service IPs') {
-            steps {
-                script {
-                    // Get the external IP address of the backend service
-                    def backendExternalIP = sh(script: "kubectl get svc ${BACKEND_SERVICE_NAME} --namespace=${NAMESPACE} -o jsonpath='{.status.loadBalancer.ingress[0].ip}'", returnStdout: true).trim()
-
-                    // Get the internal IP addresses of the MySQL and RabbitMQ services
-                    def mysqlIP = sh(script: "kubectl get svc ${MYSQL_SERVICE_NAME} --namespace=${NAMESPACE} -o jsonpath='{.spec.clusterIP}'", returnStdout: true).trim()
-                    def rabbitmqIP = sh(script: "kubectl get svc ${RABBITMQ_SERVICE_NAME} --namespace=${NAMESPACE} -o jsonpath='{.spec.clusterIP}'", returnStdout: true).trim()
-
-                    // Export environment variables
-                    env.BACKEND_URL = "https://${backendExternalIP}"
-                    env.MYSQL_CONNECTION_STRING = "mysql://${mysqlIP}:3306"
-                    env.RABBITMQ_URL = "amqp://${rabbitmqIP}:5672"
-                }
-            }
-        }
-
         stage('Deploy to Cloud Run') {
             steps {
                 script {
                     sh '''
-                    gcloud beta run deploy $CLOUD_RUN_SERVICE \
-                        --image $IMAGE_NAME \
+                    gcloud run deploy $CLOUD_RUN_SERVICE_NAME \
+                        --image gcr.io/$GCP_PROJECT_ID/$BACKEND_IMAGE:$GIT_COMMIT \
                         --platform managed \
-                        --region $REGION \
-                        --port 80 \
+                        --region $CLOUD_RUN_REGION \
                         --allow-unauthenticated \
-                        --vpc-connector $VPC_CONNECTOR \
-                        --set-env-vars BACKEND_URL=$BACKEND_URL,MYSQL_CONNECTION_STRING=$MYSQL_CONNECTION_STRING,RABBITMQ_URL=$RABBITMQ_URL
+                        --set-env-vars CLOUD_SQL_CONNECTION_NAME=$CLOUD_SQL_CONNECTION_NAME,DB_USER=$DB_USER,DB_PASSWORD=$DB_PASSWORD,DB_NAME=$DB_NAME,RABBITMQ_URL=$RABBITMQ_URL
                     '''
                 }
             }
         }
-
-        // stage('Add Custom Domain') {
-        //     steps {
-        //         script {
-        //             sh '''
-        //             gcloud beta run domain-mappings create \
-        //                 --service $CLOUD_RUN_SERVICE \
-        //                 --domain $CUSTOM_DOMAIN \
-        //                 --platform managed
-        //             '''
-        //         }
-        //     }
-        // }
+        stage('Verify Deployment') {
+            steps {
+                script {
+                    sh "gcloud run services describe $CLOUD_RUN_SERVICE_NAME --region $CLOUD_RUN_REGION --platform managed"
+                }
+            }
+        }
+    }
+    post {
+        success {
+            echo 'Deployment to Cloud Run succeeded!'
+        }
+        failure {
+            echo 'Deployment failed!'
+            // Optional: Add cleanup or rollback steps if needed
+        }
     }
 }
