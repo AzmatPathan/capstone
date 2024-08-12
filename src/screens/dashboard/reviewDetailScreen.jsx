@@ -15,7 +15,7 @@ const ReviewDetailScreen = () => {
     const userId = userInfo?._id;
     const userRole = userInfo?.role;
 
-    const isAdmin = userRole === 'admin'; 
+    const isAdmin = userRole === 'admin';
 
     const isApproved = review?.data.status === 'Approved';
 
@@ -91,6 +91,21 @@ const ReviewDetailScreen = () => {
                                     readOnly
                                     value={formatJson(review.data.reviewed_data)}
                                 />
+                            </Col>
+                        </Row>
+                        <Row className="mt-4">
+                            <Col>
+                                <h5>Review Image:</h5>
+                                {review.data.image_url ? (
+                                    <img
+                                        src={`http://localhost:4000${review.data.image_url}`}
+                                        alt="Review Image"
+                                        className="img-thumbnail"
+                                        style={{ maxWidth: '100%', height: 'auto' }}
+                                    />
+                                ) : (
+                                    <p>No image available for this review.</p>
+                                )}
                             </Col>
                         </Row>
 

@@ -10,6 +10,7 @@ const UploadImageScreen = () => {
     const [image, setImage] = useState(null);
     const [progress, setProgress] = useState(0);
     const [description, setDescription] = useState('');
+    const [equipment_id, setequipment_id] = useState('');
     const [uploadFile, { isLoading, isSuccess, isError, error, data }] = useUploadFileMutation();
 
     // Handle API response and navigation
@@ -17,7 +18,7 @@ const UploadImageScreen = () => {
         if (isSuccess && data) {
             toast.success('File uploaded successfully');
             navigate('/add-equipment', {
-                state: { uploadedFileData: { fileUrl: data.fileUrl, description, data } },
+                state: { uploadedFileData: { fileUrl: data.fileUrl, description, equipment_id, data } },
             });
         } else if (isError) {
             const errorMessage = error?.data?.message || 'Upload failed';
@@ -48,7 +49,7 @@ const UploadImageScreen = () => {
                     setProgress((prev) => (prev < 100 ? prev + 10 : 100));
                 }, 200);
 
-                await uploadFile({ file: image, description }).unwrap(); // Using unwrap to handle promise
+                await uploadFile({ file: image, description, equipment_id }).unwrap(); // Using unwrap to handle promise
                 clearInterval(uploadProgress);
                 setProgress(100);
             } catch (error) {
@@ -103,6 +104,16 @@ const UploadImageScreen = () => {
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
                         placeholder="Enter description"
+                    />
+                </Form.Group>
+                <Form.Group className="mt-3">
+                    <Form.Label>Equipment ID</Form.Label>
+                    <Form.Control
+                        as="textarea"
+                        rows={3}
+                        value={equipment_id}
+                        onChange={(e) => setequipment_id(e.target.value)}
+                        placeholder="Enter Equipment ID"
                     />
                 </Form.Group>
                 <div className="mt-3 d-flex justify-content-between">

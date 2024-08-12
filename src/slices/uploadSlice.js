@@ -4,10 +4,11 @@ import { apiSlice } from './apiSlice';
 export const uploadSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
         uploadFile: builder.mutation({
-            query: ({ description, file }) => {
+            query: ({ description, file, equipment_id }) => {
                 const formData = new FormData();
                 formData.append('description', description);
                 formData.append('image', file);
+                formData.append('equipment_id', equipment_id);
 
                 return {
                     url: '/api/upload',
@@ -21,7 +22,7 @@ export const uploadSlice = apiSlice.injectEndpoints({
             transformResponse: (response, meta, arg) => {
                 return { ...response, progress: 100 }; // Assuming the response includes the file URL or similar data
             },
-            onQueryStarted: async ({ description, file }, { dispatch, queryFulfilled }) => {
+            onQueryStarted: async ({ description, equipment_id, file }, { dispatch, queryFulfilled }) => {
                 try {
                     const { data } = await queryFulfilled;
                     console.log('Upload successful:', data);

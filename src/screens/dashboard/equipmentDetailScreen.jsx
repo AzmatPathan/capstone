@@ -38,14 +38,17 @@ const EquipmentDetailScreen = () => {
     // Update formData from location state when an image is uploaded
     useEffect(() => {
         if (location.state && location.state.uploadedFileData) {
-            const { description, data: { imageData } } = location.state.uploadedFileData;
+            console.log(location.state)
+            const { description, equipment_id, data: { imageData } } = location.state.uploadedFileData;
             if (imageData) {
                 setFormData(prevFormData => ({
                     ...prevFormData,
+                    equipment_id: equipment_id,
                     manufacturer: imageData.manufacturer || '',
                     serial_number: imageData.serial_number || '',
                     model_number: imageData.model_number || '', // Update model_number from formData
                     additional_details: `${description}  \n\n ${imageData.data})` || ''
+
                 }));
             }
         }
