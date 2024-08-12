@@ -41,8 +41,13 @@ const UploadsScreen = () => {
 
     const handleDownloadImage = (e, imageUrl) => {
         e.preventDefault();
-        // For simplicity, simulate download
-        window.open(imageUrl, '_blank');
+        // Trigger the download by creating a link element and simulating a click
+        const link = document.createElement('a');
+        link.href = imageUrl;
+        link.download = ''; // The filename will be taken from the server's Content-Disposition header
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     };
 
     return (
@@ -118,10 +123,10 @@ const UploadsScreen = () => {
                                         <td>{upload.description}</td>
                                         <td>
                                             <a
-                                                href={upload.image_url}
+                                                href={`http://localhost:4000/api/images${upload.image_url}`}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                onClick={(e) => handleDownloadImage(e, upload.image_url)}
+                                                onClick={(e) => handleDownloadImage(e, `http://localhost:4000/api/images${upload.image_url}`)}
                                             >
                                                 Download Image
                                             </a>
