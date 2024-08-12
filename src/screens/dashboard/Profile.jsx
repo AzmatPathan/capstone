@@ -1,17 +1,29 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'font-awesome/css/font-awesome.min.css';
-import React, { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Button, Spinner, Card } from 'react-bootstrap';
 import { useGetSingleUserDataQuery } from '../../slices/userApiSlice';
 import Sidebar from '../../components/sidebar';
 import './profile.css';
 
 const Profile = () => {
-    const { id } = useParams();
     const navigate = useNavigate();
-    const { data: user, error, isLoading } = useGetSingleUserDataQuery(id);
     const [sidebarOpen, setSidebarOpen] = useState(true);
+    const [userId, setUserId] = useState(null);
+
+    useEffect(() => {
+        const userInfoString = localStorage.getItem('userInfo');
+        const userInfo = userInfoString ? JSON.parse(userInfoString) : null;
+        
+        if (userInfo && userInfo._id) {
+            setUserId(userInfo._id);
+        }
+    }, []);
+
+    const { data: user, error, isLoading } = useGetSingleUserDataQuery(userId, {
+        skip: !userId, // Skip query if userId is not available
+    });
 
     const handleBackClick = () => {
         navigate('/dashboard');
@@ -67,7 +79,7 @@ const Profile = () => {
                                                     <h6 className="mb-0">User ID</h6>
                                                 </div>
                                                 <div className="col-sm-8 text-secondary field-value">
-                                                    {user?.id || 'N/A'}
+                                                    {user?.user_id || 'N/A'}
                                                 </div>
                                             </div>
                                             <hr />

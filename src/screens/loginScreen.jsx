@@ -45,6 +45,9 @@ const LoginScreen = () => {
 
             dispatch(setCredentials({ ...res }));
             setUserName(res.name); // Assuming the API response contains the user's name
+            localStorage.setItem('userInfo', JSON.stringify(res));
+            const storedUserInfo = JSON.parse(localStorage.getItem('userInfo')); // Retrieve it right away to check
+            console.log('Stored User Info:', storedUserInfo);
             navigate('/profile', { state: { userName: res.name, email: res.email } });
 
             dispatch(setCredentials(res)); // Assuming `res` already contains necessary user info
